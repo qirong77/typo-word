@@ -3,7 +3,7 @@ import { IWordInfo } from "./type";
 type IOnFinishGroup = (params: { group: IWordInfo[]; inputErrors: Set<string> }) => void;
 export class LeaningState {
     group: IWordInfo[] = [];
-    groupSize: number = 2;
+    groupSize: number = 20;
     inputErrors: Set<string> = new Set();
     currentIndex: number = 0;
     learnedGroups: any = [];
