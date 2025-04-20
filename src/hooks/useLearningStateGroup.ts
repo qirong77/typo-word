@@ -23,6 +23,7 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
         }
         setGroup(newGroup);
         setWord(newGroup[0]);
+        setCurrentWordIndex(0);
         setIsLoading(false);
     }, []);
     useEffect(() => {

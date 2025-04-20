@@ -42,8 +42,8 @@ export default () => {
     }, [userInputWord, word]);
     return (
         <div className="w-screen h-screen flex justify-center items-center bg-slate-900">
-            {isLoading && <Spin className="text-3xl"/>}
-            {word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
+            {isLoading && <Spin size="large"/>}
+            {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
             {/* <Settings /> */}
         </div>
     );
