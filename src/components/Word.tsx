@@ -1,26 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useEffect, useRef } from "react";
 import { SoundOutlined } from "@ant-design/icons";
-import { useWordInfo } from "../hooks/useWordInfo";
+import { IWordInfo } from "../hooks/useLearningStateGroup";
 
-export function Word(props: { word: string; userInputWord: string; showRealWord: boolean }) {
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const wordInfo = useWordInfo(props.word);
-    useEffect(() => {
-        // axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${props.word}`).then((res) => {
-        //     // @ts-ignore
-        //     const url = res.data[0]?.phonetics.find((item) => item.audio)?.audio;
-        //     console.log(res.data);
-        //     if (url) {
-        //         console.log(url);
-        //         audioRef.current!.src = url;
-        //         audioRef.current!.play();
-        //     }
-        // });
-    }, [props]);
+export function Word(props: { word: IWordInfo; userInputWord: string; showRealWord: boolean }) {
+    const audioRefAm = useRef<HTMLAudioElement>(null);
+    const audioRefEn = useRef<HTMLAudioElement>(null);
     useEffect(() => {
         const timer = setInterval(() => {
-            audioRef.current?.play();
+            audioRefAm.current?.play();
         }, 3000);
         return () => {
             window.clearInterval(timer);
@@ -30,7 +17,7 @@ export function Word(props: { word: string; userInputWord: string; showRealWord:
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <div className="relative w-80 h-20">
                 <div className="absolute flex gap-3 text-5xl text-slate-500 left-1/2 transform -translate-x-1/2">
-                    {props.word.split("").map((char, index) => {
+                    {props.word.word.split("").map((char, index) => {
                         return (
                             <span className={`w-10 text-center  h-12  text-slate-400 ${props.showRealWord ? "" : "hidden"}`} key={index}>
                                 {char}
@@ -39,7 +26,7 @@ export function Word(props: { word: string; userInputWord: string; showRealWord:
                     })}
                 </div>
                 <div className="absolute flex gap-3 text-5xl left-1/2 transform -translate-x-1/2">
-                    {props.word.split("").map((char, index) => {
+                    {props.word.word.split("").map((char, index) => {
                         return (
                             <span
                                 className="w-10 text-center border-b-2 border-solid h-12 border-slate-200"
@@ -52,14 +39,35 @@ export function Word(props: { word: string; userInputWord: string; showRealWord:
                             </span>
                         );
                     })}
-                    <SoundOutlined
-                        onClick={() => audioRef.current?.play()}
-                        style={{ fontSize: "20px", color: "var(--color-slate-300)", cursor: "pointer", position: "absolute", right: -40, bottom: 10 }}
-                    />
                 </div>
             </div>
-            <div className="mt-5"></div>
-            <audio ref={audioRef}></audio>
+            <div className="my-5 flex gap-10">
+                <span className="flex gap-2">
+                    <span className="text-center mx-2 text-slate-400">美 [ {props.word.ph_am} ]</span>
+                    <audio ref={audioRefAm} className=" hidden" src={props.word.ph_am_mp3}></audio>
+                    <SoundOutlined
+                        onClick={() => audioRefAm.current?.play()}
+                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer" }}
+                    />
+                </span>
+                <span className="flex gap-2">
+                    <span className="text-center mx-2 text-slate-400">英 [ {props.word.ph_en} ]</span>
+                    <audio ref={audioRefEn} className="hidden" src={props.word.ph_en_mp3}></audio>
+                    <SoundOutlined
+                        onClick={() => audioRefEn.current?.play()}
+                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer" }}
+                    />
+                </span>
+            </div>
+            <div>
+                {props.word.means.map((mean, index) => {
+                    return (
+                        <span className="text-center mx-2 text-slate-400" key={index}>
+                            {mean}、
+                        </span>
+                    );
+                })}
+            </div>
         </div>
     );
 }

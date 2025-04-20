@@ -4,11 +4,10 @@ import { useLearningState } from "./hooks/useLearningStateGroup";
 
 // import { Settings } from "./components/Settings";
 export default () => {
-    const { word, eatWord } = useLearningState(20);
+    const { word, eatWord } = useLearningState(3);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const errorCountRef = useRef(0);
-
     useEffect(() => {
         document.addEventListener("keydown", (e) => {
             if (e.key === "Backspace") {
@@ -25,7 +24,7 @@ export default () => {
     }, []);
     useEffect(() => {
         if (!word) return;
-        if (userInputWord === word) {
+        if (userInputWord === word.word) {
             errorCountRef.current = 0;
             setTimeout(() => {
                 eatWord();
@@ -34,7 +33,7 @@ export default () => {
             }, 200);
             return;
         }
-        if (!word.includes(userInputWord)) {
+        if (!word.word.includes(userInputWord)) {
             errorCountRef.current++;
             if (errorCountRef.current === 3) {
                 setShowRealWord(true);
