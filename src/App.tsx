@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Word } from "./components/Word";
-import { LeaningState } from "./LearningState";
+import { LeaningStateGroup } from "./LearningStateGroup";
 import { IWordInfo } from "./type";
+import { Settings } from "./components/Settings";
 
 export default () => {
     const [wordInfo, setWordInfo] = useState<IWordInfo>();
     const [userInputWord, setUserInputWord] = useState("");
+    const [showRealWord, setShowRealWord] = useState(false);
+    const errorCountRef = useRef(0);
     const learningStateRef = useRef(
-        new LeaningState({
+        new LeaningStateGroup({
             onFinishGroup(params) {
                 alert("完成一组");
             },
@@ -21,6 +24,10 @@ export default () => {
                 setUserInputWord((v) => v.slice(0, v.length - 1));
                 return;
             }
+            if (!/^[a-zA-Z]$/.test(e.key)) {
+                e.preventDefault();
+                return;
+            }
             setUserInputWord((v) => v + e.key);
         });
     }, []);
@@ -28,19 +35,26 @@ export default () => {
         if (!wordInfo) return;
         if (userInputWord === wordInfo?.word) {
             const nextWordInfo = learningStateRef.current.getNextWord();
+            errorCountRef.current = 0
             setTimeout(() => {
-              setWordInfo(nextWordInfo);
-              setUserInputWord("");
-            },200)
-            return
+                setWordInfo(nextWordInfo);
+                setUserInputWord("");
+                setShowRealWord(false)
+            }, 200);
+            return;
         }
         if (!wordInfo?.word.includes(userInputWord)) {
-            learningStateRef.current.inputErrors.add(wordInfo?.word);
+            learningStateRef.current.inputErrors.push(wordInfo);
+            errorCountRef.current++;
+            if (errorCountRef.current === 3) {
+                setShowRealWord(true);
+            }
         }
     }, [userInputWord, wordInfo]);
     return (
         <div className=" w-screen h-screen flex justify-center items-center bg-slate-900">
-            {wordInfo && <Word wordInfo={wordInfo} userInputWord={userInputWord} />}
+            {wordInfo && <Word showRealWord={showRealWord} wordInfo={wordInfo} userInputWord={userInputWord} />}
+            {/* <Settings /> */}
         </div>
     );
 };

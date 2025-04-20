@@ -1,10 +1,10 @@
 import graduate from "./books/graduate.json";
 import { IWordInfo } from "./type";
-type IOnFinishGroup = (params: { group: IWordInfo[]; inputErrors: Set<string> }) => void;
-export class LeaningState {
+type IOnFinishGroup = (params: { group: IWordInfo[]; inputErrors: IWordInfo[] }) => void;
+export class LeaningStateGroup {
     group: IWordInfo[] = [];
     groupSize: number = 20;
-    inputErrors: Set<string> = new Set();
+    inputErrors: IWordInfo[] = [];
     currentIndex: number = 0;
     learnedGroups: any = [];
     onFinishGroup: IOnFinishGroup;
@@ -13,8 +13,8 @@ export class LeaningState {
         this.updateGroup();
     }
 
-    recordError(word: string): void {
-        this.inputErrors.add(word);
+    recordError(word: IWordInfo): void {
+        this.inputErrors.push(word);
     }
     updateGroup() {
         // @ts-ignore
@@ -34,10 +34,17 @@ export class LeaningState {
     getNextWord() {
         let word = this.group[this.currentIndex];
         if (!word) {
-            this.recordLearnedGroup();
-            this.updateGroup();
-            this.onFinishGroup({ group: this.group, inputErrors: this.inputErrors });
-            word = this.group[this.currentIndex];
+            if (this.inputErrors.length === 0) {
+                this.recordLearnedGroup();
+                this.updateGroup();
+                this.onFinishGroup({ group: this.group, inputErrors: this.inputErrors });
+                word = this.group[this.currentIndex];
+            } else {
+                this.group = [...this.inputErrors];
+                this.inputErrors = [];
+                this.currentIndex = 0;
+                word = this.group[this.currentIndex];
+            }
         }
         this.currentIndex++;
         return word;
