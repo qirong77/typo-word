@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Word } from "./components/Word";
 import { useLearningState } from "./hooks/useLearningStateGroup";
-
+import { Spin } from "antd";
 // import { Settings } from "./components/Settings";
 export default () => {
-    const { word, eatWord } = useLearningState(3);
+    const { word, eatWord,isLoading } = useLearningState(10);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const errorCountRef = useRef(0);
@@ -42,6 +42,7 @@ export default () => {
     }, [userInputWord, word]);
     return (
         <div className="w-screen h-screen flex justify-center items-center bg-slate-900">
+            {isLoading && <Spin className="text-3xl"/>}
             {word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
             {/* <Settings /> */}
         </div>

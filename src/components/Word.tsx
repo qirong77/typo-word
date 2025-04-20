@@ -6,13 +6,8 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
     const audioRefAm = useRef<HTMLAudioElement>(null);
     const audioRefEn = useRef<HTMLAudioElement>(null);
     useEffect(() => {
-        const timer = setInterval(() => {
-            audioRefAm.current?.play();
-        }, 3000);
-        return () => {
-            window.clearInterval(timer);
-        };
-    }, [props]);
+        audioRefAm.current?.play();
+    }, [props.word]);
     return (
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <div className="relative w-80 h-20">
@@ -47,7 +42,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                     <audio ref={audioRefAm} className=" hidden" src={props.word.ph_am_mp3}></audio>
                     <SoundOutlined
                         onClick={() => audioRefAm.current?.play()}
-                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer" }}
+                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer", outline: "none" }}
                     />
                 </span>
                 <span className="flex gap-2">
@@ -55,7 +50,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                     <audio ref={audioRefEn} className="hidden" src={props.word.ph_en_mp3}></audio>
                     <SoundOutlined
                         onClick={() => audioRefEn.current?.play()}
-                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer" }}
+                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer", outline: "none" }}
                     />
                 </span>
             </div>

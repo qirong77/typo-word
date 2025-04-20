@@ -8,33 +8,36 @@ export interface IWordInfo {
     ph_en_mp3: string;
     means: string[];
 }
-export function useLearningState(groupSize = 20) {
+export function useLearningState(groupSize = 20, totalSize = graduate.length) {
     const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(false);
     const updateGroup = useCallback(async () => {
+        setIsLoading(true);
         const newGroup: IWordInfo[] = [];
         for (let i = 0; i < groupSize; i++) {
-            const index = Math.floor(Math.random() * groupSize);
-            const info = await getWordInfo(graduate[index]) as IWordInfo;
+            const index = Math.floor(Math.random() * totalSize);
+            const info = (await getWordInfo(graduate[index])) as IWordInfo;
             newGroup.push(info);
         }
         setGroup(newGroup);
         setWord(newGroup[0]);
+        setIsLoading(false);
     }, []);
     useEffect(() => {
         updateGroup();
     }, [updateGroup]);
-    const eatWord = () => {
+    const eatWord = async () => {
         setCurrentWordIndex((v) => v + 1);
         const word = group[currentWordIndex];
         if (!word) {
-            updateGroup();
+            await updateGroup();
             return;
         }
         setWord(word);
     };
-    return { word, eatWord };
+    return { word, eatWord,isLoading };
 }
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {
