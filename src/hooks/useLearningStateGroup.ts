@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import graduate from "../books/graduate-words.json";
-import { DataManager } from "../data/DataManager";
+import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../data";
 export interface IWordInfo {
     word: string;
     ph_en: string;
@@ -9,17 +9,13 @@ export interface IWordInfo {
     ph_en_mp3: string;
     means: string[];
 }
-interface IUnfamiliarWords {
-    word: string;
-    means: string[];
-}
+
 export function useLearningState(groupSize = 20, totalSize = graduate.length) {
     const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
     const unFamiliarWordsRef = useRef<IUnfamiliarWords[]>([]);
-    const unFamiliarWordsDataManagerRef = useRef<DataManager<IUnfamiliarWords[]>>(new DataManager<IUnfamiliarWords[]>("UnfamiliarWords", []));
     const markUnfamiliar = useCallback((word: IWordInfo) => {
         unFamiliarWordsRef.current.push({
             word: word.word,
@@ -28,8 +24,8 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
     }, []);
     const updateGroup = useCallback(async () => {
         setIsLoading(true);
-        const oldData = unFamiliarWordsDataManagerRef.current.getData();
-        unFamiliarWordsDataManagerRef.current.saveData([...oldData, ...unFamiliarWordsRef.current]);
+        const oldData = unFamiliarWordsDataManager.getData();
+        unFamiliarWordsDataManager.saveData([...oldData, ...unFamiliarWordsRef.current]);
         unFamiliarWordsRef.current = [];
         const newGroup: IWordInfo[] = [];
         for (let i = 0; i < groupSize; i++) {
