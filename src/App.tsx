@@ -3,6 +3,8 @@ import { Word } from "./components/Word";
 import { useLearningState } from "./hooks/useLearningStateGroup";
 import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
+import successAudioUrl from '@assets/correct.mp3'
+import errorAudioUrl from '@assets/error.mp3'
 // import { Settings } from "./components/Settings";
 export default () => {
     const { word, eatWord, isLoading } = useLearningState(2);
@@ -15,6 +17,8 @@ export default () => {
         accuracy: 0,
     });
     const errorCountRef = useRef(0);
+    const successAudioRef = useRef<HTMLAudioElement>(null);
+    const errorAudioRef = useRef<HTMLAudioElement>(null);
     useEffect(() => {
         let timer: any;
         let startTime: number = 0;
@@ -65,9 +69,11 @@ export default () => {
             eatWord();
             setUserInputWord("");
             setShowRealWord(false);
+            successAudioRef.current?.play();
             return;
         }
         if (!word.word.includes(userInputWord)) {
+            errorAudioRef.current?.play();
             errorCountRef.current++;
             setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
             if (errorCountRef.current === 3) {
@@ -82,6 +88,9 @@ export default () => {
                 {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
             </div>
             <InputStateBoard {...inputState} />
+            <audio ref={successAudioRef} src={successAudioUrl}/>
+            <audio ref={errorAudioRef} src={errorAudioUrl}/>
+
             {/* <Settings /> */}
         </div>
     );
