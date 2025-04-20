@@ -74,11 +74,13 @@ export default () => {
                 setShowRealWord(true);
             }
         }
-    }, []);
+    }, [userInputWord,word]);
     return (
         <div className="w-screen h-screen flex flex-col justify-center items-center bg-slate-900">
-            {isLoading && <Spin size="large" />}
-            {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
+            <div className="flex justify-center items-center" style={{ height: '80vh' }}>
+                {isLoading && <Spin size="large" />}
+                {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
+            </div>
             <InputStateBoard {...inputState} />
             {/* <Settings /> */}
         </div>

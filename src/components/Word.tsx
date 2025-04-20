@@ -24,10 +24,10 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                     {props.word.word.split("").map((char, index) => {
                         return (
                             <span
-                                className="w-10 text-center border-b-2 border-solid h-12 border-slate-200"
+                                className="w-10 text-center border-b-2 border-solid h-14 border-slate-200"
                                 key={index}
                                 style={{
-                                    color: char === props.userInputWord[index] ? "var(--color-slate-300)" : "red",
+                                    color: char === props.userInputWord[index] ? "var(--color-green-400)" : "var(--color-red-500)",
                                 }}
                             >
                                 {props.userInputWord[index]}

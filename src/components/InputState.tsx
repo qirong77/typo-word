@@ -8,7 +8,7 @@ function StatItem({ label, value }: StatItemProps) {
         <div className=" flex justify-center items-center flex-col" style={{
             padding:'10px 30px',
         }}>
-            <div className="text-xl  text-slate-500">{value}</div>
+            <div className=" text-slate-500">{value}</div>
             <div className=" text-slate-500">{label}</div>
         </div>
     );
