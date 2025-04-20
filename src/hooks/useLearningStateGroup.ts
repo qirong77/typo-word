@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import graduate from "../books/graduate-words.json";
+import { DataManager } from "../data/DataManager";
 export interface IWordInfo {
     word: string;
     ph_en: string;
@@ -8,41 +9,39 @@ export interface IWordInfo {
     ph_en_mp3: string;
     means: string[];
 }
+interface IUnfamiliarWords {
+    word: string;
+    means: string[];
+}
 export function useLearningState(groupSize = 20, totalSize = graduate.length) {
     const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
-    const unFamiliarWordsRef = useRef<IWordInfo[]>([]);
+    const unFamiliarWordsRef = useRef<IUnfamiliarWords[]>([]);
+    const unFamiliarWordsDataManagerRef = useRef<DataManager<IUnfamiliarWords[]>>(new DataManager<IUnfamiliarWords[]>("UnfamiliarWords", []));
     const markUnfamiliar = useCallback((word: IWordInfo) => {
-        unFamiliarWordsRef.current.push(word);
-    }, []);
-    const saveUnfamiliarWords = useCallback(() => {
-        const key = "unfamiliarWords";
-        if (localStorage.getItem(key)) {
-            const oldData = JSON.parse(localStorage.getItem(key) as string);
-            localStorage.setItem(key, JSON.stringify([...oldData, ...unFamiliarWordsRef.current]));
-            unFamiliarWordsRef.current = [];
-            return;
-        }
-        localStorage.setItem(key, JSON.stringify(unFamiliarWordsRef.current));
-        unFamiliarWordsRef.current = [];
+        unFamiliarWordsRef.current.push({
+            word: word.word,
+            means: word.means,
+        });
     }, []);
     const updateGroup = useCallback(async () => {
         setIsLoading(true);
+        const oldData = unFamiliarWordsDataManagerRef.current.getData();
+        unFamiliarWordsDataManagerRef.current.saveData([...oldData, ...unFamiliarWordsRef.current]);
+        unFamiliarWordsRef.current = [];
         const newGroup: IWordInfo[] = [];
         for (let i = 0; i < groupSize; i++) {
             const index = Math.floor(Math.random() * totalSize);
             const info = (await getWordInfo(graduate[index])) as IWordInfo;
             newGroup.push(info);
         }
-        saveUnfamiliarWords();
         setGroup(newGroup);
         setWord(newGroup[0]);
         setCurrentWordIndex(0);
         setIsLoading(false);
-    }, [markUnfamiliar, saveUnfamiliarWords]);
-
+    }, []);
     useEffect(() => {
         updateGroup();
     }, [updateGroup]);
