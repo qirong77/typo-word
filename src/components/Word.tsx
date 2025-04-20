@@ -14,7 +14,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                 <div className="absolute flex gap-3 text-5xl text-slate-500 left-1/2 transform -translate-x-1/2">
                     {props.word.word.split("").map((char, index) => {
                         return (
-                            <span className={`w-10 text-center  h-12  text-slate-400 ${props.showRealWord ? "" : "hidden"}`} key={index}>
+                            <span className={`w-10 text-center  h-12  text-slate-500 ${props.showRealWord ? "" : "hidden"}`} key={index}>
                                 {char}
                             </span>
                         );
@@ -27,7 +27,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                                 className="w-10 text-center border-b-2 border-solid h-14 border-slate-200"
                                 key={index}
                                 style={{
-                                    color: char === props.userInputWord[index] ? "var(--color-green-400)" : "var(--color-red-500)",
+                                    color: char.toLocaleLowerCase() === props.userInputWord[index]?.toLocaleLowerCase() ? "var(--color-green-400)" : "var(--color-red-500)",
                                 }}
                             >
                                 {props.userInputWord[index]}

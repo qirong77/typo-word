@@ -5,9 +5,10 @@ import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
+import { isInlucdesWord, isSameWord } from "./utils";
 // import { Settings } from "./components/Settings";
 export default () => {
-    const { word, eatWord, isLoading } = useLearningState(20);
+    const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(20);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const [inputState, setInputState] = useState({
@@ -16,7 +17,6 @@ export default () => {
         timeElapsed: "00:00",
         accuracy: 0,
     });
-    const errorCountRef = useRef(0);
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
     useEffect(() => {
@@ -29,6 +29,7 @@ export default () => {
                 return;
             }
             if (e.key === "Tab") {
+                word && markUnfamiliar(word);
                 setShowRealWord((v) => !v);
             }
             if (e.altKey || e.metaKey || e.shiftKey || e.ctrlKey) return;
@@ -44,7 +45,6 @@ export default () => {
                     const minutes = Math.floor(elapsedSeconds / 60);
                     const seconds = elapsedSeconds % 60;
                     const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
                     setInputState((v) => ({
                         ...v,
                         timeElapsed: formattedTime,
@@ -67,27 +67,28 @@ export default () => {
     }, []);
     useEffect(() => {
         if (!word) return;
-        if (userInputWord === word.word) {
-            errorCountRef.current = 0;
+        if (isSameWord(word.word, userInputWord)) {
             eatWord();
             setUserInputWord("");
             setShowRealWord(false);
             successAudioRef.current?.play();
             return;
         }
-        if (!word.word.includes(userInputWord)) {
+        if (!isInlucdesWord(word.word, userInputWord)) {
             errorAudioRef.current?.play();
-            errorCountRef.current++;
+            markUnfamiliar(word);
             setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
-            if (errorCountRef.current === 5) {
-                setShowRealWord(true);
-            }
         }
     }, [userInputWord, word]);
     return (
         <div className="w-screen h-screen flex flex-col justify-center items-center bg-slate-900">
             <div className="flex justify-center items-center" style={{ height: "80vh" }}>
-                {isLoading && <Spin size="large" />}
+                {isLoading && (
+                    <div className="flex flex-col justify-center items-center">
+                        <Spin size="large" />
+                        <div className="text-slate-500" style={{ marginTop: "20px" }}>正在获取新的数据...</div>
+                    </div>
+                )}
                 {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
             </div>
             <InputStateBoard {...inputState} />

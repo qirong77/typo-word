@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import graduate from "../books/graduate-words.json";
 export interface IWordInfo {
     word: string;
@@ -13,6 +13,21 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
+    const unFamiliarWordsRef = useRef<IWordInfo[]>([]);
+    const markUnfamiliar = useCallback((word: IWordInfo) => {
+        unFamiliarWordsRef.current.push(word);
+    }, []);
+    const saveUnfamiliarWords = useCallback(() => {
+        const key = "unfamiliarWords";
+        if (localStorage.getItem(key)) {
+            const oldData = JSON.parse(localStorage.getItem(key) as string);
+            localStorage.setItem(key, JSON.stringify([...oldData, ...unFamiliarWordsRef.current]));
+            unFamiliarWordsRef.current = [];
+            return;
+        }
+        localStorage.setItem(key, JSON.stringify(unFamiliarWordsRef.current));
+        unFamiliarWordsRef.current = [];
+    }, []);
     const updateGroup = useCallback(async () => {
         setIsLoading(true);
         const newGroup: IWordInfo[] = [];
@@ -21,11 +36,13 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
             const info = (await getWordInfo(graduate[index])) as IWordInfo;
             newGroup.push(info);
         }
+        saveUnfamiliarWords();
         setGroup(newGroup);
         setWord(newGroup[0]);
         setCurrentWordIndex(0);
         setIsLoading(false);
-    }, []);
+    }, [markUnfamiliar, saveUnfamiliarWords]);
+
     useEffect(() => {
         updateGroup();
     }, [updateGroup]);
@@ -38,7 +55,7 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
         }
         setWord(nextWord);
     };
-    return { word, eatWord, isLoading };
+    return { word, eatWord, isLoading, markUnfamiliar };
 }
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {
