@@ -26,11 +26,9 @@ export default () => {
         if (!word) return;
         if (userInputWord === word.word) {
             errorCountRef.current = 0;
-            setTimeout(() => {
-                eatWord();
-                setUserInputWord("");
-                setShowRealWord(false);
-            }, 200);
+            eatWord();
+            setUserInputWord("");
+            setShowRealWord(false);
             return;
         }
         if (!word.word.includes(userInputWord)) {

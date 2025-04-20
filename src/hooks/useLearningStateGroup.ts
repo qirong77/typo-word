@@ -30,15 +30,15 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
         updateGroup();
     }, [updateGroup]);
     const eatWord = async () => {
-        setCurrentWordIndex((v) => v + 1);
-        const word = group[currentWordIndex];
-        if (!word) {
+        setCurrentWordIndex(currentWordIndex + 1);
+        const nextWord = group[currentWordIndex + 1];
+        if (!nextWord) {
             await updateGroup();
             return;
         }
-        setWord(word);
+        setWord(nextWord);
     };
-    return { word, eatWord,isLoading };
+    return { word, eatWord, isLoading };
 }
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {
