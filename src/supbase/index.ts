@@ -8,7 +8,7 @@ export interface ITableRowWord {
         phrase: string;
         translation: string;
     };
-    phonetic: string;
+    phonetic: string; // 音标
     audioUrl: string;
 }
 export interface ITableRowUser {

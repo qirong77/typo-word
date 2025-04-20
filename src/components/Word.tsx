@@ -10,6 +10,7 @@ export function Word(props: { wordInfo: IWordInfo; userInputWord: string; showRe
         axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${props.wordInfo.word}`).then((res) => {
             // @ts-ignore
             const url = res.data[0]?.phonetics.find((item) => item.audio)?.audio;
+            console.log(res.data)
             if (url) {
                 console.log(url);
                 audioRef.current!.src = url;
