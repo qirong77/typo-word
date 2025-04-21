@@ -24,8 +24,7 @@ export const VocabularyList = (props: { book: string }) => {
 
     // 删除单词
     const handleDelete = (word: string) => {
-        const index = vocabularyList.findIndex((item) => item.word === word);
-        unFamiliarWordsDataManager.deleteDataArrayIndex(index);
+        unFamiliarWordsDataManager.arrayDelectByMatch("word", word);
         setVocabularyList(unFamiliarWordsDataManager.getData());
     };
 

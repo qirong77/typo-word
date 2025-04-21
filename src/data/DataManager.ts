@@ -12,7 +12,7 @@ export class DataManager<T> {
             this.saveData(this._defaultData);
         }
     }
-    getData(): T{
+    getData(): T {
         if (!this._needJsonParse) return window.localStorage.getItem(this._storageKey)! as T;
         return JSON.parse(window.localStorage.getItem(this._storageKey)!);
     }
@@ -20,7 +20,7 @@ export class DataManager<T> {
         if (!this._needJsonParse) return window.localStorage.setItem(this._storageKey, newDta as string);
         localStorage.setItem(this._storageKey, JSON.stringify(newDta));
     }
-    deleteDataByKey(key: string) {
+    objectDeleteDataByKey(key: string) {
         if (!this._needJsonParse) {
             console.error("不支持");
             message.error("不支持");
@@ -31,7 +31,7 @@ export class DataManager<T> {
         delete oldData[key];
         this.saveData(oldData);
     }
-    setProperty(key: keyof T, value: any) {
+    objectSetProperty(key: keyof T, value: any) {
         if (!this._needJsonParse) {
             console.error("不支持");
             message.error("不支持");
@@ -42,11 +42,15 @@ export class DataManager<T> {
         oldData[key] = value;
         this.saveData(oldData);
     }
-    deleteDataArrayIndex(i: number) {
+    arrayDelectByMatch(key: string, value: any) {
+        // @ts-ignore
+        const index = this.getData().findIndex((item) => item[key] === value);
         const oldData = this.getData() as T;
-        if (Array.isArray(oldData)) {
-            oldData.splice(i, 1);
+        if (Array.isArray(oldData) && index !== -1) {
+            oldData.splice(index, 1);
             this.saveData(oldData);
+            return;
         }
+        message.error("arrayDelectByMatch error");
     }
 }

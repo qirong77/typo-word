@@ -20,41 +20,6 @@ export function useLearningState(groupSize = 3, book: string) {
     const [isLoading, setIsLoading] = useState(false);
     const groupCacheRef = useRef<IWordInfo[]>([]);
     const unFamiliarWordsRef = useRef<IUnfamiliarWords[]>([]);
-    const wordRef = useRef<IWordInfo>();
-    const markUnfamiliar = useCallback(() => {
-        if(!wordRef.current) return;
-        unFamiliarWordsRef.current.push({
-            word: wordRef.current!.word,
-            means: wordRef.current!.means,
-        });
-    }, []);
-    const createGroup = useCallback(async () => {
-        const familarWordSet = new Set();
-        familarWordsDataManager.getData().forEach((item) => {
-            familarWordSet.add(item.word);
-        });
-        const bookWords = getBookWords(book);
-        if (!bookWords.length) {
-            message.error("当前词库为空");
-            return [];
-        }
-        const totalSize = bookWords.length;
-        let newGroup: IWordInfo[] = [];
-        for (let i = 0; i < groupSize; i++) {
-            const index = Math.floor(Math.random() * totalSize);
-            const info = (await getWordInfo(bookWords[index])) as IWordInfo;
-            newGroup.push(info);
-        }
-        newGroup = newGroup.filter((item) => {
-            return !familarWordSet.has(item.word);
-        });
-        if (!newGroup.length) {
-            console.log("reload");
-            newGroup = await createGroup();
-            return newGroup;
-        }
-        return newGroup;
-    }, [book]);
     const updateGroup = useCallback(async () => {
         setIsLoading(true);
         const oldData = unFamiliarWordsDataManager.getData();
@@ -71,25 +36,11 @@ export function useLearningState(groupSize = 3, book: string) {
         setWord(newGroup[0]);
         setCurrentWordIndex(0);
         setIsLoading(false);
-    }, [createGroup]);
+    }, []);
     useEffect(() => {
-        if (!group.length) return;
-        const updateCache = async () => {
-            const newGroup = await createGroup();
-            groupCacheRef.current = newGroup;
-        };
-        updateCache();
-    }, [group, createGroup]);
-    useEffect(()=>{
         groupCacheRef.current = [];
-        updateGroup()
-    },[book])
-    useEffect(() => {
-        wordRef.current = word
-        if (!group.length && word) {
-            updateGroup();
-        }
-    }, [word]);
+        updateGroup();
+    }, [book]);
     const eatWord = async () => {
         setCurrentWordIndex(currentWordIndex + 1);
         const nextWord = group[currentWordIndex + 1];
@@ -99,7 +50,7 @@ export function useLearningState(groupSize = 3, book: string) {
         }
         setWord(nextWord);
     };
-    return { word, eatWord, isLoading, markUnfamiliar };
+    return { word, eatWord, isLoading };
 }
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {
@@ -137,4 +88,31 @@ function getWordInfo(word: string) {
             return info;
         })
         .catch((error) => console.error("Fetch error:", error));
+}
+
+async function createGroup(book: string, groupSize: number) {
+    // const familarWordSet = new Set();
+    // familarWordsDataManager.getData().forEach((item) => {
+    //     familarWordSet.add(item.word);
+    // });
+    const bookWords = getBookWords(book);
+    if (!bookWords.length) {
+        message.error("当前词库为空");
+        return [];
+    }
+    const totalSize = bookWords.length;
+    let newGroup: IWordInfo[] = [];
+    for (let i = 0; i < groupSize; i++) {
+        const index = Math.floor(Math.random() * totalSize);
+        const info = (await getWordInfo(bookWords[index])) as IWordInfo;
+        newGroup.push(info);
+    }
+    // newGroup = newGroup.filter((item) => {
+    //     return !familarWordSet.has(item.word);
+    // });
+    // if (!newGroup.length) {
+    //     console.log("reload");
+    //     newGroup = await createGroup();
+    //     return newGroup;
+    // }
 }
