@@ -5,6 +5,9 @@ export function isSameWord(w1 = "", w2 = "") {
 export function isInlucdesWord(w1 = "", w2 = "") {
     return w1.toLowerCase().includes(w2.toLowerCase());
 }
+export function uniqueArray<T=Object>(arr: T[],key: keyof T) {
+    return [...new Map(arr.map(item => [item[key], item])).values()];
+}
 
 export function isCombinationKeyInput(e: KeyboardEvent) {
     let key = 0;

@@ -6,10 +6,11 @@ import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "./utils";
+import { ToolBar } from "./components/ToolBar";
 import { familarWordsDataManager, userDataManager } from "./data";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
-    const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(20, book);
+    const { word, eatWord, isLoading, markUnfamiliar,wordRef } = useLearningState(5, book);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const [inputState, setInputState] = useState({
@@ -32,12 +33,14 @@ export default () => {
             }
             if(e.isComposing) return
             if (e.key === "Backspace") {
-                e.preventDefault()
+                e.preventDefault();
                 setUserInputWord((v) => v.slice(0, v.length - 1));
                 return;
             }
             if (e.key === "Tab") {
-                word && markUnfamiliar(word);
+                setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
+                e.preventDefault();
+                wordRef.current && markUnfamiliar(wordRef.current);
                 setShowRealWord((v) => !v);
                 e.preventDefault()
                 return
@@ -79,16 +82,20 @@ export default () => {
     useEffect(() => {
         if (!word) return;
         if (isSameWord(word.word, userInputWord)) {
-            eatWord();
-            setUserInputWord("");
-            setShowRealWord(false);
-            successAudioRef.current?.play();
+            setTimeout(() => {
+                eatWord();
+                setUserInputWord("");
+                setShowRealWord(false);
+                successAudioRef.current?.play();
+            }, 250);
             return;
         }
         if (!isInlucdesWord(word.word, userInputWord)) {
             errorAudioRef.current?.play();
-            markUnfamiliar(word);
             setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
+        }
+        if (userInputWord.length >= word.word.length) {
+            setUserInputWord(userInputWord.slice(0, word.word.length));
         }
     }, [userInputWord, word]);
     return (
@@ -107,8 +114,7 @@ export default () => {
             <InputStateBoard {...inputState} />
             <audio ref={successAudioRef} src={successAudioUrl} />
             <audio ref={errorAudioRef} src={errorAudioUrl} />
-
-            {/* <Settings /> */}
+            <ToolBar />
         </div>
     );
 };
