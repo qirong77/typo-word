@@ -20,13 +20,14 @@ export function useLearningState(groupSize = 3, book: string) {
     const [isLoading, setIsLoading] = useState(false);
     const groupCacheRef = useRef<IWordInfo[]>([]);
     const unFamiliarWordsRef = useRef<IUnfamiliarWords[]>([]);
+    const wordRef = useRef<IWordInfo>();
     const markUnfamiliar = useCallback(() => {
-        if(!word) return
+        if(!wordRef.current) return;
         unFamiliarWordsRef.current.push({
-            word: word.word,
-            means: word.means,
+            word: wordRef.current!.word,
+            means: wordRef.current!.means,
         });
-    }, [word]);
+    }, []);
     const createGroup = useCallback(async () => {
         const familarWordSet = new Set();
         familarWordsDataManager.getData().forEach((item) => {
@@ -35,6 +36,7 @@ export function useLearningState(groupSize = 3, book: string) {
         const bookWords = getBookWords(book);
         if (!bookWords.length) {
             message.error("当前词库为空");
+            return [];
         }
         const totalSize = bookWords.length;
         let newGroup: IWordInfo[] = [];
@@ -83,6 +85,7 @@ export function useLearningState(groupSize = 3, book: string) {
         updateGroup()
     },[book])
     useEffect(() => {
+        wordRef.current = word
         if (!group.length && word) {
             updateGroup();
         }

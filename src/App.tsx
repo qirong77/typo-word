@@ -23,11 +23,9 @@ export default () => {
     });
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
-
     useEffect(() => {
         let timer: any;
         let startTime: number = 0;
-
         const keydownHandler = (e: KeyboardEvent) => {
             if (isCombinationKeyInput(e)) {
                 e.preventDefault();
@@ -44,7 +42,6 @@ export default () => {
                 e.preventDefault();
                 markUnfamiliar();
                 setShowRealWord((v) => !v);
-                e.preventDefault();
                 return;
             }
             if (e.shiftKey) {

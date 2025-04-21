@@ -8,7 +8,7 @@ export const VocabularyList = (props: { book: string }) => {
     const [visible, setVisible] = useState(false);
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
     const [currentPage, setCurrentPage] = useState(1); // 当前页码
-    const [pageSize, setPageSize] = useState(10); // 每页显示的条数
+    const [pageSize, setPageSize] = useState(5); // 每页显示的条数
 
     useEffect(() => {
         if (!visible) return;
@@ -24,7 +24,7 @@ export const VocabularyList = (props: { book: string }) => {
 
     // 删除单词
     const handleDelete = (word: string) => {
-        const index = vocabularyList.findIndex((item) => item.word !== word);
+        const index = vocabularyList.findIndex((item) => item.word === word);
         unFamiliarWordsDataManager.deleteDataArrayIndex(index);
         setVocabularyList(unFamiliarWordsDataManager.getData());
     };
@@ -53,7 +53,7 @@ export const VocabularyList = (props: { book: string }) => {
     ];
 
     const content = (
-        <div style={{ width: 500, maxHeight: 400, overflow: "auto" }}>
+        <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
             {vocabularyList.length > 0 ? (
                 <Table
                     bordered
