@@ -7,6 +7,8 @@ import { getBookWords } from "../../books/getBookWords";
 export const VocabularyList = (props: { book: string }) => {
     const [visible, setVisible] = useState(false);
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
+    const [currentPage, setCurrentPage] = useState(1); // 当前页码
+    const [pageSize, setPageSize] = useState(10); // 每页显示的条数
 
     useEffect(() => {
         if (!visible) return;
@@ -53,7 +55,22 @@ export const VocabularyList = (props: { book: string }) => {
     const content = (
         <div style={{ width: 500, maxHeight: 400, overflow: "auto" }}>
             {vocabularyList.length > 0 ? (
-                <Table bordered dataSource={vocabularyList} columns={columns} rowKey="word" pagination={false} size="small" />
+                <Table
+                    bordered
+                    dataSource={vocabularyList}
+                    columns={columns}
+                    rowKey="word"
+                    pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: vocabularyList.length,
+                        onChange: (page, size) => {
+                            setCurrentPage(page);
+                            setPageSize(size);
+                        },
+                    }}
+                    size="small"
+                />
             ) : (
                 <Typography.Text type="secondary">暂无生词</Typography.Text>
             )}
@@ -62,7 +79,7 @@ export const VocabularyList = (props: { book: string }) => {
 
     return (
         <Popover content={content} title={props.book} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
-            <Button icon={<BookOutlined />} >
+            <Button icon={<BookOutlined />}>
                 单词列表
             </Button>
         </Popover>
