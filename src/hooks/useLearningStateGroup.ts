@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import graduate from "../books/graduate-words.json";
 import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../data";
+import { getBookWords } from "../books/getBookWords";
+import { message } from "antd";
 export interface IWordInfo {
     word: string;
     ph_en: string;
@@ -10,7 +11,7 @@ export interface IWordInfo {
     means: string[];
 }
 
-export function useLearningState(groupSize = 20, totalSize = graduate.length) {
+export function useLearningState(groupSize = 20, book:string) {
     const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
@@ -27,17 +28,22 @@ export function useLearningState(groupSize = 20, totalSize = graduate.length) {
         const oldData = unFamiliarWordsDataManager.getData();
         unFamiliarWordsDataManager.saveData([...oldData, ...unFamiliarWordsRef.current]);
         unFamiliarWordsRef.current = [];
+        const bookWords = getBookWords(book);
+        if(!bookWords.length){
+            message.error("当前词库为空")
+        }
+        const totalSize = bookWords.length;
         const newGroup: IWordInfo[] = [];
         for (let i = 0; i < groupSize; i++) {
             const index = Math.floor(Math.random() * totalSize);
-            const info = (await getWordInfo(graduate[index])) as IWordInfo;
+            const info = (await getWordInfo(bookWords[index])) as IWordInfo;
             newGroup.push(info);
         }
         setGroup(newGroup);
         setWord(newGroup[0]);
         setCurrentWordIndex(0);
         setIsLoading(false);
-    }, []);
+    }, [book]);
     useEffect(() => {
         updateGroup();
     }, [updateGroup]);

@@ -6,10 +6,10 @@ import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { isInlucdesWord, isSameWord } from "./utils";
-import { familarWordsDataManager } from "./data";
-// import { Settings } from "./components/Settings";
+import { familarWordsDataManager, userDataManager } from "./data";
 export default () => {
-    const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(20);
+    const [book, setBook] = useState(userDataManager.getData().currentBook);
+    const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(20, book);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const [inputState, setInputState] = useState({
@@ -20,6 +20,7 @@ export default () => {
     });
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
+
     useEffect(() => {
         let timer: any;
         let startTime: number = 0;
@@ -38,10 +39,10 @@ export default () => {
                 e.preventDefault();
                 return;
             }
-            if(e.shiftKey) {
-                familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }])
-                return
-            };
+            if (e.shiftKey) {
+                familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }]);
+                return;
+            }
             if (!timer) {
                 startTime = Date.now();
                 timer = setInterval(() => {
@@ -90,7 +91,9 @@ export default () => {
                 {isLoading && (
                     <div className="flex flex-col justify-center items-center">
                         <Spin size="large" />
-                        <div className="text-slate-500" style={{ marginTop: "20px" }}>正在获取新的数据...</div>
+                        <div className="text-slate-500" style={{ marginTop: "20px" }}>
+                            正在获取新的数据...
+                        </div>
                     </div>
                 )}
                 {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
