@@ -7,7 +7,7 @@ import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "./utils";
 import { ToolBar } from "./components/ToolBar";
-import { bookDataManager, familarWordsDataManager, userDataManager } from "./data";
+import { familarWordsDataManager, userDataManager } from "./data";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
     const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(5, book);
@@ -27,11 +27,11 @@ export default () => {
         let startTime: number = 0;
 
         const keydownHandler = (e: KeyboardEvent) => {
-            if(isCombinationKeyInput(e)) {
-                e.preventDefault()
-                return
+            if (isCombinationKeyInput(e)) {
+                e.preventDefault();
+                return;
             }
-            if(e.isComposing) return
+            if (e.isComposing) return;
             if (e.key === "Backspace") {
                 e.preventDefault();
                 setUserInputWord((v) => v.slice(0, v.length - 1));
@@ -42,13 +42,13 @@ export default () => {
                 e.preventDefault();
                 markUnfamiliar();
                 setShowRealWord((v) => !v);
-                e.preventDefault()
-                return
+                e.preventDefault();
+                return;
             }
             if (e.shiftKey) {
                 familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }]);
-                setUserInputWord('');
-                eatWord()
+                setUserInputWord("");
+                eatWord();
                 successAudioRef.current?.play();
                 return;
             }
@@ -117,10 +117,12 @@ export default () => {
             <InputStateBoard {...inputState} />
             <audio ref={successAudioRef} src={successAudioUrl} />
             <audio ref={errorAudioRef} src={errorAudioUrl} />
-            <ToolBar onChangeBook={(value) => {
-                setBook(value)
-                bookDataManager.saveData(value)
-            }} />
+            <ToolBar
+                onChangeBook={(value) => {
+                    setBook(value);
+                    userDataManager.setProperty("currentBook", value);
+                }}
+            />
         </div>
     );
 };

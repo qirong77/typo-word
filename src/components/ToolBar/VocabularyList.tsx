@@ -2,16 +2,22 @@ import { BookOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, Popover, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../data";
+import { getBookWords } from "../../books/getBookWords";
 
-export const VocabularyList = () => {
+export const VocabularyList = (props: { book: string }) => {
     const [visible, setVisible] = useState(false);
-    const [vocabularyList, setVocabularyList] = useState<IUnfamiliarWords[]>([]);
+    const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
 
     useEffect(() => {
         if (!visible) return;
         // 加载生词列表数据
-        const data = unFamiliarWordsDataManager.getData();
-        setVocabularyList(data);
+        const data = getBookWords(props.book);
+        setVocabularyList(
+            data.map((item) => ({
+                word: item,
+                means: [],
+            }))
+        );
     }, [visible]);
 
     // 删除单词
@@ -55,17 +61,10 @@ export const VocabularyList = () => {
     );
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: "20px",
-                right: "20px",
-                zIndex: 1000,
-            }}
-        >
-            <Popover content={content} title="生词本" trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
-                <Button type="primary" shape="circle" icon={<BookOutlined />} size="large" />
-            </Popover>
-        </div>
+        <Popover content={content} title={props.book} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
+            <Button icon={<BookOutlined />} >
+                单词列表
+            </Button>
+        </Popover>
     );
 };

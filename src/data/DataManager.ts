@@ -31,6 +31,17 @@ export class DataManager<T> {
         delete oldData[key];
         this.saveData(oldData);
     }
+    setProperty(key: keyof T, value: any) {
+        if (!this._needJsonParse) {
+            console.error("不支持");
+            message.error("不支持");
+            return;
+        }
+        const oldData = this.getData() as T;
+        // @ts-ignore
+        oldData[key] = value;
+        this.saveData(oldData);
+    }
     deleteDataArrayIndex(i: number) {
         const oldData = this.getData() as T;
         if (Array.isArray(oldData)) {
