@@ -6,6 +6,7 @@ import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { isInlucdesWord, isSameWord } from "./utils";
+import { familarWordsDataManager } from "./data";
 // import { Settings } from "./components/Settings";
 export default () => {
     const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(20);
@@ -32,12 +33,15 @@ export default () => {
                 word && markUnfamiliar(word);
                 setShowRealWord((v) => !v);
             }
-            if (e.altKey || e.metaKey || e.shiftKey || e.ctrlKey) return;
+            if (e.altKey || e.metaKey || e.ctrlKey) return;
             if (!/^[a-zA-Z]$/.test(e.key)) {
                 e.preventDefault();
                 return;
             }
-
+            if(e.shiftKey) {
+                familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }])
+                return
+            };
             if (!timer) {
                 startTime = Date.now();
                 timer = setInterval(() => {
