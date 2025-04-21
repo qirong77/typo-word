@@ -1,7 +1,11 @@
+import { BookDropDown } from './BookDropDown';
 import { VocabularyList } from './VocabularyList';
 
 export const ToolBar = () => {
-    return <div className=' fixed to-0 right-0'>
-        <VocabularyList />
+    return <div className=' fixed top-5 right-5 '>
+        <BookDropDown onChange={(value) => {
+            console.log(value)
+        }} />
+        {/* <VocabularyList /> */}
     </div>
 }
