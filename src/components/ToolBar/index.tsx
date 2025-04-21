@@ -1,11 +1,15 @@
-import { BookDropDown } from './BookDropDown';
-import { VocabularyList } from './VocabularyList';
+import { BookDropDown } from "./BookDropDown";
+import { VocabularyList } from "./VocabularyList";
 
-export const ToolBar = () => {
-    return <div className=' fixed top-5 right-5 '>
-        <BookDropDown onChange={(value) => {
-            console.log(value)
-        }} />
-        {/* <VocabularyList /> */}
-    </div>
-}
+export const ToolBar = (props: { onChangeBook: (value: string) => void }) => {
+    return (
+        <div className=" fixed top-5 right-5 ">
+            <BookDropDown
+                onChange={(value) => {
+                    props.onChangeBook(value);
+                }}
+            />
+            {/* <VocabularyList /> */}
+        </div>
+    );
+};

@@ -7,10 +7,10 @@ import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "./utils";
 import { ToolBar } from "./components/ToolBar";
-import { familarWordsDataManager, userDataManager } from "./data";
+import { bookDataManager, familarWordsDataManager, userDataManager } from "./data";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
-    const { word, eatWord, isLoading, markUnfamiliar,wordRef } = useLearningState(5, book);
+    const { word, eatWord, isLoading, markUnfamiliar } = useLearningState(5, book);
     const [userInputWord, setUserInputWord] = useState("");
     const [showRealWord, setShowRealWord] = useState(false);
     const [inputState, setInputState] = useState({
@@ -40,13 +40,16 @@ export default () => {
             if (e.key === "Tab") {
                 setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
-                wordRef.current && markUnfamiliar(wordRef.current);
+                markUnfamiliar();
                 setShowRealWord((v) => !v);
                 e.preventDefault()
                 return
             }
             if (e.shiftKey) {
                 familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }]);
+                setUserInputWord('');
+                eatWord()
+                successAudioRef.current?.play();
                 return;
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
@@ -114,7 +117,10 @@ export default () => {
             <InputStateBoard {...inputState} />
             <audio ref={successAudioRef} src={successAudioUrl} />
             <audio ref={errorAudioRef} src={errorAudioUrl} />
-            <ToolBar />
+            <ToolBar onChangeBook={(value) => {
+                setBook(value)
+                bookDataManager.saveData(value)
+            }} />
         </div>
     );
 };

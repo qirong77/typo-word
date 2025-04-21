@@ -13,28 +13,28 @@ export interface IWordInfo {
     means: string[];
 }
 
-export function useLearningState(groupSize = 20, book:string) {
+export function useLearningState(groupSize = 3, book: string) {
     const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
     const groupCacheRef = useRef<IWordInfo[]>([]);
-    const wordRef = useRef<IWordInfo>();
     const unFamiliarWordsRef = useRef<IUnfamiliarWords[]>([]);
-    const markUnfamiliar = useCallback((word: IWordInfo) => {
+    const markUnfamiliar = useCallback(() => {
+        if(!word) return
         unFamiliarWordsRef.current.push({
             word: word.word,
             means: word.means,
         });
-    }, []);
+    }, [word]);
     const createGroup = useCallback(async () => {
-        const familarWordSet = new Set()
+        const familarWordSet = new Set();
         familarWordsDataManager.getData().forEach((item) => {
-            familarWordSet.add(item.word)
-        })
+            familarWordSet.add(item.word);
+        });
         const bookWords = getBookWords(book);
-        if(!bookWords.length){
-            message.error("当前词库为空")
+        if (!bookWords.length) {
+            message.error("当前词库为空");
         }
         const totalSize = bookWords.length;
         let newGroup: IWordInfo[] = [];
@@ -44,11 +44,12 @@ export function useLearningState(groupSize = 20, book:string) {
             newGroup.push(info);
         }
         newGroup = newGroup.filter((item) => {
-            return !familarWordSet.has(item.word)
+            return !familarWordSet.has(item.word);
         });
-        if(!newGroup.length){
-            console.log('reload')
-            return createGroup()
+        if (!newGroup.length) {
+            console.log("reload");
+            newGroup = await createGroup();
+            return newGroup;
         }
         return newGroup;
     }, [book]);
@@ -68,7 +69,7 @@ export function useLearningState(groupSize = 20, book:string) {
         setWord(newGroup[0]);
         setCurrentWordIndex(0);
         setIsLoading(false);
-    }, []);
+    }, [createGroup]);
     useEffect(() => {
         if (!group.length) return;
         const updateCache = async () => {
@@ -77,9 +78,15 @@ export function useLearningState(groupSize = 20, book:string) {
         };
         updateCache();
     }, [group, createGroup]);
+    useEffect(()=>{
+        groupCacheRef.current = [];
+        updateGroup()
+    },[book])
     useEffect(() => {
-        updateGroup();
-    }, [updateGroup]);
+        if (!group.length && word) {
+            updateGroup();
+        }
+    }, [word]);
     const eatWord = async () => {
         setCurrentWordIndex(currentWordIndex + 1);
         const nextWord = group[currentWordIndex + 1];
@@ -89,10 +96,7 @@ export function useLearningState(groupSize = 20, book:string) {
         }
         setWord(nextWord);
     };
-    useEffect(() => {
-        wordRef.current = word;
-    },[word])
-    return { word, eatWord, isLoading, markUnfamiliar,wordRef };
+    return { word, eatWord, isLoading, markUnfamiliar };
 }
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {

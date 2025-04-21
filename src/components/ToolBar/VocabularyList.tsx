@@ -8,7 +8,7 @@ export const VocabularyList = () => {
     const [vocabularyList, setVocabularyList] = useState<IUnfamiliarWords[]>([]);
 
     useEffect(() => {
-        if(!visible) return
+        if (!visible) return;
         // 加载生词列表数据
         const data = unFamiliarWordsDataManager.getData();
         setVocabularyList(data);
@@ -16,9 +16,9 @@ export const VocabularyList = () => {
 
     // 删除单词
     const handleDelete = (word: string) => {
-        const newList = vocabularyList.filter((item) => item.word !== word);
-        setVocabularyList(newList);
-        unFamiliarWordsDataManager.saveData(newList);
+        const index = vocabularyList.findIndex((item) => item.word !== word);
+        unFamiliarWordsDataManager.deleteDataArrayIndex(index);
+        setVocabularyList(unFamiliarWordsDataManager.getData());
     };
 
     const columns = [

@@ -18,3 +18,4 @@ export const userDataManager = new DataManager<{
 });
 
 export const hotKeyDataManager = new DataManager<{label:string,value:string}[]>("HotKeys", []);
+export const bookDataManager = new DataManager<string>("Book", 'Graduate');
