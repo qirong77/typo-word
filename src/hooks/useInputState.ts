@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 import { IWordInfo } from "./useLearningStateGroup";
+import { TypeWordEvent } from "../event/TypeWordEvent";
 
 export function useInputState(
     word: IWordInfo | undefined,
@@ -36,6 +37,7 @@ export function useInputState(
             if (e.shiftKey) {
                 setUserInputWord("");
                 successAudioRef.current?.play();
+                TypeWordEvent.dispatchEvent('key-shift')
                 return;
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
@@ -75,6 +77,7 @@ export function useInputState(
                 setUserInputWord("");
                 setShowRealWord(false);
                 successAudioRef.current?.play();
+                TypeWordEvent.dispatchEvent('next-word')
             }, 250);
             return;
         }
