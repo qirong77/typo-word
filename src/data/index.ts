@@ -4,9 +4,17 @@ export interface IUnfamiliarWords {
     means: string[];
 }
 export const unFamiliarWordsDataManager = new DataManager<IUnfamiliarWords[]>("UnfamiliarWords", []);
+
 export const familarWordsDataManager = new DataManager<
     {
         word: string;
     }[]
 >("FamilarWords", []);
 
+export const userDataManager = new DataManager<{
+    currentBook: string;
+}>("HotKeys", {
+    currentBook:'Graduate',
+});
+
+export const hotKeyDataManager = new DataManager<{label:string,value:string}[]>("HotKeys", []);
