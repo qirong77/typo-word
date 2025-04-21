@@ -35,9 +35,7 @@ export function useLearningState(groupSize = 3, book: string) {
     };
     useEffect(() => {
         const handleShift = () => {};
-        const handleNext = () => {
-
-        };
+        const handleNext = () => {};
         TypeWordEvent.addEventListener("key-shift", handleShift);
         TypeWordEvent.addEventListener("next-word", handleNext);
         return () => {
