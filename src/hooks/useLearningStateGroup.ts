@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../data";
+import { familarWordsDataManager, IUnfamiliarWords, unFamiliarWordsDataManager } from "../data";
 import { getBookWords } from "../books/getBookWords";
 import { message } from "antd";
 export interface IWordInfo {
@@ -28,16 +28,28 @@ export function useLearningState(groupSize = 20, book:string) {
         const oldData = unFamiliarWordsDataManager.getData();
         unFamiliarWordsDataManager.saveData([...oldData, ...unFamiliarWordsRef.current]);
         unFamiliarWordsRef.current = [];
+        const familarWordSet = new Set()
+        familarWordsDataManager.getData().forEach((item) => {
+            familarWordSet.add(item.word)
+        })
         const bookWords = getBookWords(book);
         if(!bookWords.length){
             message.error("当前词库为空")
         }
         const totalSize = bookWords.length;
-        const newGroup: IWordInfo[] = [];
+        let newGroup: IWordInfo[] = [];
         for (let i = 0; i < groupSize; i++) {
             const index = Math.floor(Math.random() * totalSize);
             const info = (await getWordInfo(bookWords[index])) as IWordInfo;
             newGroup.push(info);
+        }
+        newGroup = newGroup.filter((item) => {
+            return !familarWordSet.has(item.word)
+        });
+        if(!newGroup.length){
+            console.log('reload')
+            updateGroup()
+            return
         }
         setGroup(newGroup);
         setWord(newGroup[0]);
@@ -58,6 +70,9 @@ export function useLearningState(groupSize = 20, book:string) {
     };
     return { word, eatWord, isLoading, markUnfamiliar };
 }
+
+
+
 // https://www.iciba.com/word?w=book
 function getWordInfo(word: string) {
     const url = "https://nvmwtbxkogzhldqnlrbl.supabase.co/functions/v1/hello-world";

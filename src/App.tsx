@@ -5,7 +5,7 @@ import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
-import { isInlucdesWord, isSameWord } from "./utils";
+import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "./utils";
 import { familarWordsDataManager, userDataManager } from "./data";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
@@ -26,21 +26,28 @@ export default () => {
         let startTime: number = 0;
 
         const keydownHandler = (e: KeyboardEvent) => {
+            if(isCombinationKeyInput(e)) {
+                e.preventDefault()
+                return
+            }
+            if(e.isComposing) return
             if (e.key === "Backspace") {
+                e.preventDefault()
                 setUserInputWord((v) => v.slice(0, v.length - 1));
                 return;
             }
             if (e.key === "Tab") {
                 word && markUnfamiliar(word);
                 setShowRealWord((v) => !v);
-            }
-            if (e.altKey || e.metaKey || e.ctrlKey) return;
-            if (!/^[a-zA-Z]$/.test(e.key)) {
-                e.preventDefault();
-                return;
+                e.preventDefault()
+                return
             }
             if (e.shiftKey) {
                 familarWordsDataManager.saveData([...familarWordsDataManager.getData(), { word: e.key }]);
+                return;
+            }
+            if (!/^[a-zA-Z]$/.test(e.key)) {
+                e.preventDefault();
                 return;
             }
             if (!timer) {
@@ -56,7 +63,6 @@ export default () => {
                     }));
                 }, 1000);
             }
-
             setInputState((v) => ({ ...v, count: v.count + 1, accuracy: Math.floor(((v.count - v.errorCout) / v.count) * 100) }));
             setUserInputWord((v) => v + e.key);
         };
