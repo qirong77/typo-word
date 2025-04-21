@@ -15,10 +15,10 @@ export interface IWordInfo {
 }
 
 export function useLearningState(groupSize = 3, book: string) {
-    const [group, setGroup] = useState<IWordInfo[]>([]);
     const [word, setWord] = useState<IWordInfo>();
     const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [group, setGroup] = useState<IWordInfo[]>([]);
     const updateGroup = async () => {
         setIsLoading(true);
         setCurrentWordIndex(0);
