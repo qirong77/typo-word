@@ -10,33 +10,37 @@ export interface IWordInfo {
     ph_en_mp3: string;
     means: string[];
 }
-
 export function useLearningState(groupSize = 3, book: string) {
     const [word, setWord] = useState<IWordInfo>();
     const [isLoading, setIsLoading] = useState(false);
-    const wordGroupManager = useRef(new WordGroupManager({ book, groupSize, setIsLoading: (isLoading: boolean) => setIsLoading(isLoading) }));
+    // 如果将构造函数放在 useRef 中,那么会造成死循环
+    const wordGroupManager = useRef<WordGroupManager>();
     useEffect(() => {
-        wordGroupManager.current.book = book;
-        wordGroupManager.current.groupSize = groupSize;
-    }, [groupSize, book]);
-    useEffect(() => {
+        wordGroupManager.current = new WordGroupManager({
+            book,
+            groupSize,
+            onLoadingChange: (isLoading: boolean) => {
+                setIsLoading(isLoading);
+            },
+        })
         const handleShift = () => {
-            const word = wordGroupManager.current.getCurrentWord();
+            const word = wordGroupManager.current!.getCurrentWord();
             if (word) {
                 familarWordsDataManager.arrayAddItem(word, "word");
             }
         };
         const handleNext = () => {
-            wordGroupManager.current.nextWord().then((word) => {
+            wordGroupManager.current!.nextWord().then((word) => {
                 setWord(word);
             });
         };
         const handleTab = () => {
-            const word = wordGroupManager.current.getCurrentWord();
+            const word = wordGroupManager.current!.getCurrentWord();
             if (word) {
                 unFamiliarWordsDataManager.arrayAddItem(word, "word");
             }
         };
+        handleNext()
         TypeWordEvent.addEventListener("key-shift", handleShift);
         TypeWordEvent.addEventListener("next-word", handleNext);
         TypeWordEvent.addEventListener("key-tab", handleTab);
@@ -46,5 +50,9 @@ export function useLearningState(groupSize = 3, book: string) {
             TypeWordEvent.removeEventListener("key-tab", handleTab);
         };
     }, []);
+    useEffect(() => {
+        wordGroupManager.current!.book = book;
+        wordGroupManager.current!.groupSize = groupSize;
+    }, [groupSize, book]);
     return { word, isLoading };
 }

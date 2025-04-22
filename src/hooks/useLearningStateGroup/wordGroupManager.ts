@@ -10,23 +10,23 @@ export class WordGroupManager {
     private _maxGroupSize = 100;
     public groupSize = 5;
     public book = "";
-    public setIsLoading: (isLoading: boolean) => void;
+    public onLoadingChange: (isLoading: boolean) => void;
 
-    constructor(props: { book: string; groupSize: number; setIsLoading: (isLoading: boolean) => void }) {
+    constructor(props: { book: string; groupSize: number; onLoadingChange: (isLoading: boolean) => void }) {
         this.book = props.book;
         this.groupSize = props.groupSize;
-        this.setIsLoading = props.setIsLoading;
+        this.onLoadingChange = props.onLoadingChange;
         this.updateGroup();
     }
 
     async updateGroup() {
         if (!this._group[this._index]) {
-            this.setIsLoading(true);
+            this.onLoadingChange(true);
         }
         const bookWords = getBookWords(this.book);
         if (!bookWords.length) {
             message.error("当前词库为空");
-            this.setIsLoading(false);
+            this.onLoadingChange(false);
             return [];
         }
         const totalSize = bookWords.length;
@@ -37,7 +37,7 @@ export class WordGroupManager {
             newGroup.push(info);
         }
         this._group.push(...newGroup);
-        this.setIsLoading(false);
+        this.onLoadingChange(false);
         this._clearUsedWords()
     }
 

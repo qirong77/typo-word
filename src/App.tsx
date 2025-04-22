@@ -7,7 +7,6 @@ import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
 import { ToolBar } from "./components/ToolBar";
 import { userDataManager } from "./data";
-// main.tsx
 import { ConfigProvider, theme } from "antd";
 import { useInputState } from "./hooks/useInputState";
 export default () => {
