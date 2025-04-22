@@ -1,4 +1,5 @@
 import { BookDropDown } from "./BookDropDown";
+import { Settings } from "./Settings";
 import { VocabularyList } from "./VocabularyList";
 
 export const ToolBar = (props: { onChangeBook: (value: string) => void; book: string }) => {
@@ -11,6 +12,7 @@ export const ToolBar = (props: { onChangeBook: (value: string) => void; book: st
                 }}
             />
             <VocabularyList book={props.book} />
+            <Settings/>
         </div>
     );
 };
