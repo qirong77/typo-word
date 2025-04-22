@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TypeWordEvent } from "../../event/TypeWordEvent";
 import { WordGroupManager } from "./wordGroupManager";
 import { familarWordsDataManager, unFamiliarWordsDataManager } from "../../data";
@@ -15,6 +15,11 @@ export function useLearningState(groupSize = 3, book: string) {
     const [isLoading, setIsLoading] = useState(false);
     // 如果将构造函数放在 useRef 中,那么会造成死循环
     const wordGroupManager = useRef<WordGroupManager>();
+    const nextWord = useCallback(() => {
+        wordGroupManager.current!.nextWord().then((word) => {
+            setWord(word);
+        });
+    }, []);
     useEffect(() => {
         wordGroupManager.current = new WordGroupManager({
             book,
@@ -22,17 +27,16 @@ export function useLearningState(groupSize = 3, book: string) {
             onLoadingChange: (isLoading: boolean) => {
                 setIsLoading(isLoading);
             },
-        })
+        });
         const handleShift = () => {
             const word = wordGroupManager.current!.getCurrentWord();
             if (word) {
                 familarWordsDataManager.arrayAddItem(word, "word");
+                nextWord();
             }
         };
         const handleNext = () => {
-            wordGroupManager.current!.nextWord().then((word) => {
-                setWord(word);
-            });
+            nextWord();
         };
         const handleTab = () => {
             const word = wordGroupManager.current!.getCurrentWord();
@@ -40,7 +44,7 @@ export function useLearningState(groupSize = 3, book: string) {
                 unFamiliarWordsDataManager.arrayAddItem(word, "word");
             }
         };
-        handleNext()
+        handleNext();
         TypeWordEvent.addEventListener("key-shift", handleShift);
         TypeWordEvent.addEventListener("next-word", handleNext);
         TypeWordEvent.addEventListener("key-tab", handleTab);
@@ -53,7 +57,9 @@ export function useLearningState(groupSize = 3, book: string) {
     useEffect(() => {
         wordGroupManager.current!.book = book;
         wordGroupManager.current!.groupSize = groupSize;
-        wordGroupManager.current!.reset();
+        wordGroupManager.current!.reset().then(() => {
+            nextWord();
+        });
     }, [groupSize, book]);
     return { word, isLoading };
 }
