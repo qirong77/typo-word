@@ -32,6 +32,7 @@ export function useInputState(
                 setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
                 setShowRealWord((v) => !v);
+                TypeWordEvent.dispatchEvent('key-tab')
                 return;
             }
             if (e.shiftKey) {

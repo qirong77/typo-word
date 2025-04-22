@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TypeWordEvent } from "../../event/TypeWordEvent";
 import { WordGroupManager } from "./wordGroupManager";
-import { familarWordsDataManager } from "../../data";
+import { familarWordsDataManager, unFamiliarWordsDataManager } from "../../data";
 export interface IWordInfo {
     word: string;
     ph_en: string;
@@ -31,11 +31,19 @@ export function useLearningState(groupSize = 3, book: string) {
                 setWord(word);
             });
         };
+        const handleTab = () => {
+            const word = wordGroupManager.current.getCurrentWord();
+            if (word) {
+                unFamiliarWordsDataManager.arrayAddItem(word, "word");
+            }
+        };
         TypeWordEvent.addEventListener("key-shift", handleShift);
         TypeWordEvent.addEventListener("next-word", handleNext);
+        TypeWordEvent.addEventListener("key-tab", handleTab);
         return () => {
             TypeWordEvent.removeEventListener("key-shift", handleShift);
             TypeWordEvent.removeEventListener("next-word", handleNext);
+            TypeWordEvent.removeEventListener("key-tab", handleTab);
         };
     }, []);
     return { word, isLoading };

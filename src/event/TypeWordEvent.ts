@@ -1,4 +1,4 @@
-type EventType = "key-shift" | "next-word";
+type EventType = "key-shift" | "next-word" | 'key-tab';
 export const TypeWordEvent = {
     dispatchEvent(eventName: EventType, detail: any = undefined) {
         const event = new CustomEvent(eventName, { detail });

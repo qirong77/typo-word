@@ -5,9 +5,8 @@ import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
 import errorAudioUrl from "../public/assets/beep.mp3";
-import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "./utils";
 import { ToolBar } from "./components/ToolBar";
-import { familarWordsDataManager, unFamiliarWordsDataManager, userDataManager } from "./data";
+import { userDataManager } from "./data";
 // main.tsx
 import { ConfigProvider, theme } from "antd";
 import { useInputState } from "./hooks/useInputState";
