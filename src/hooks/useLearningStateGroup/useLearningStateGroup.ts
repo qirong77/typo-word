@@ -53,6 +53,7 @@ export function useLearningState(groupSize = 3, book: string) {
     useEffect(() => {
         wordGroupManager.current!.book = book;
         wordGroupManager.current!.groupSize = groupSize;
+        wordGroupManager.current!.reset();
     }, [groupSize, book]);
     return { word, isLoading };
 }

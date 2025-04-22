@@ -63,4 +63,10 @@ export class WordGroupManager {
             this._index = 0;
         }
     }
+    reset() {
+        this._group = [];
+        this._index = 0;
+        this._currentWord = null;
+        this.updateGroup();
+    }
 }
