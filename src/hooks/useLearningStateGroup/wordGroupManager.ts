@@ -6,48 +6,61 @@ import { getWordInfo } from "./getWordInfo";
 export class WordGroupManager {
     private _group: IWordInfo[] = [];
     private _index = 0;
-    private _currentWord: IWordInfo | null = null;
+    private _currentWord: IWordInfo | null | undefined = null;
+    private _maxGroupSize = 100;
     public groupSize = 5;
     public book = "";
-    public setIsLoading: Function;
-    constructor(props: { book: string; groupSize: number; setIsLoading: Function }) {
+    public setIsLoading: (isLoading: boolean) => void;
+
+    constructor(props: { book: string; groupSize: number; setIsLoading: (isLoading: boolean) => void }) {
         this.book = props.book;
         this.groupSize = props.groupSize;
-        this.updateGroup();
         this.setIsLoading = props.setIsLoading;
+        this.updateGroup();
     }
+
     async updateGroup() {
-        if (!this._group[this._index + 1]) {
+        if (!this._group[this._index]) {
             this.setIsLoading(true);
         }
         const bookWords = getBookWords(this.book);
         if (!bookWords.length) {
             message.error("当前词库为空");
+            this.setIsLoading(false);
             return [];
         }
         const totalSize = bookWords.length;
         const newGroup: IWordInfo[] = [];
-        for (let i = 0; i < this.groupSize; i++) {
+        while (newGroup.length < this.groupSize) {
             const index = Math.floor(Math.random() * totalSize);
             const info = (await getWordInfo(bookWords[index])) as IWordInfo;
             newGroup.push(info);
         }
         this._group.push(...newGroup);
         this.setIsLoading(false);
+        this._clearUsedWords()
     }
+
     async nextWord() {
-        const word = this._group[this._index];
-        if (!word) {
+        if (!this._group[this._index]) {
             await this.updateGroup();
         }
+        const word = this._group[this._index];
         this._index++;
-        if (this._index % this.groupSize === 0) {
+        this._currentWord = word;
+        if (this._index + this.groupSize > this._group.length) {
             this.updateGroup();
         }
-        this._currentWord = word;
         return word;
     }
+
     getCurrentWord() {
         return this._currentWord;
+    }
+    _clearUsedWords() {
+        if (this._group.length > this._maxGroupSize) {
+            this._group = this._group.slice(this._group.length - this._maxGroupSize);
+            this._index = 0;
+        }
     }
 }

@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-
-import { familarWordsDataManager, IUnfamiliarWords, unFamiliarWordsDataManager } from "../../data";
+import { useEffect, useRef, useState } from "react";
 import { TypeWordEvent } from "../../event/TypeWordEvent";
 import { WordGroupManager } from "./wordGroupManager";
+import { familarWordsDataManager } from "../../data";
 export interface IWordInfo {
     word: string;
     ph_en: string;
@@ -24,6 +23,7 @@ export function useLearningState(groupSize = 3, book: string) {
         const handleShift = () => {
             const word = wordGroupManager.current.getCurrentWord();
             if (word) {
+                familarWordsDataManager.arrayAddItem(word, "word");
             }
         };
         const handleNext = () => {
