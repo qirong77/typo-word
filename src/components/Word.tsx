@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { SoundOutlined } from "@ant-design/icons";
-import { IWordInfo } from "../hooks/useLearningStateGroup";
+import { IWordInfo } from "../hooks/useLearningStateGroup/useLearningStateGroup";
 
 export function Word(props: { word: IWordInfo; userInputWord: string; showRealWord: boolean }) {
     const audioRefAm = useRef<HTMLAudioElement>(null);

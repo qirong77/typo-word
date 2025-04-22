@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
-import { IWordInfo } from "./useLearningStateGroup";
+import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
 import { TypeWordEvent } from "../event/TypeWordEvent";
 
 export function useInputState(

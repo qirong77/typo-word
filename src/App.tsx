@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Word } from "./components/Word";
-import { useLearningState } from "./hooks/useLearningStateGroup";
+import { useLearningState } from "./hooks/useLearningStateGroup/useLearningStateGroup";
 import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
@@ -17,7 +17,6 @@ export default () => {
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
     const { inputState, showRealWord, userInputWord } = useInputState(word!, successAudioRef, errorAudioRef);
-
     return (
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
             <div className="w-screen h-screen flex flex-col justify-center items-center bg-slate-900">
