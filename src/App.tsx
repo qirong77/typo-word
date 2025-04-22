@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import { Word } from "./components/Word";
 import { useLearningState } from "./hooks/useLearningStateGroup/useLearningStateGroup";
 import { Spin } from "antd";
@@ -34,6 +34,7 @@ export default () => {
                 <audio ref={successAudioRef} src={successAudioUrl} />
                 <audio ref={errorAudioRef} src={errorAudioUrl} />
                 <ToolBar
+                    book={book}
                     onChangeBook={(value) => {
                         setBook(value);
                         userDataManager.objectSetProperty("currentBook", value);
