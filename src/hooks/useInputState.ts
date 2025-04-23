@@ -3,11 +3,17 @@ import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
 import { TypeWordEvent } from "../event/TypeWordEvent";
 import { message } from "antd";
-
+export interface IInputState {
+    count: number;
+    errorCout: number;
+    timeElapsed: string;
+    accuracy: number;
+    wordCount: number;
+}
 export function useInputState(
     word: IWordInfo | undefined,
     successAudioRef: React.RefObject<HTMLAudioElement>,
-    errorAudioRef: React.RefObject<HTMLAudioElement>,
+    errorAudioRef: React.RefObject<HTMLAudioElement>
 ) {
     const [showRealWord, setShowRealWord] = useState(false);
     const [userInputWord, setUserInputWord] = useState("");
@@ -28,7 +34,7 @@ export function useInputState(
                 message.error("请使用英文输入法");
             }
             if (e.key === "`") {
-                TypeWordEvent.dispatchEvent('key-backquote');
+                TypeWordEvent.dispatchEvent("key-backquote");
                 e.preventDefault();
                 return;
             }
