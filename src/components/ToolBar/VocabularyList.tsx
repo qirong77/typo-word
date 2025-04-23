@@ -1,17 +1,15 @@
-import { BookOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, Popover, Table, Typography } from "antd";
+import {  DeleteOutlined } from "@ant-design/icons";
+import { Button , Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../data";
 import { getBookWords } from "../../books/getBookWords";
 
 export const VocabularyList = (props: { book: string }) => {
-    const [visible, setVisible] = useState(false);
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
     const [currentPage, setCurrentPage] = useState(1); // 当前页码
     const [pageSize, setPageSize] = useState(5); // 每页显示的条数
 
     useEffect(() => {
-        if (!visible) return;
         // 加载生词列表数据
         const data = getBookWords(props.book);
         setVocabularyList(
@@ -20,7 +18,7 @@ export const VocabularyList = (props: { book: string }) => {
                 means: [],
             }))
         );
-    }, [visible]);
+    }, []);
 
     // 删除单词
     const handleDelete = (word: string) => {
@@ -76,11 +74,5 @@ export const VocabularyList = (props: { book: string }) => {
         </div>
     );
 
-    return (
-        <Popover content={content} title={props.book} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
-            <Button icon={<BookOutlined />}>
-                单词列表
-            </Button>
-        </Popover>
-    );
+    return content
 };

@@ -16,9 +16,8 @@ export const userDataManager = new DataManagerObject<{
 }>("HotKeys", {
     currentBook: E_BOOKS.Graduate,
 });
-
-export const recordDataManager = new DataManagerArray<
-    {
-        book: string;
-    } & IInputState
->("records", []);
+export type IHistory = {
+    id: number;
+    book: string;
+} & IInputState;
+export const historyDataManager = new DataManagerArray<IHistory>("records", []);

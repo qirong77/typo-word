@@ -11,7 +11,6 @@ export class WordGroupManager {
     public groupSize = 5;
     public book = "";
     public onLoadingChange: (isLoading: boolean) => void;
-
     constructor(props: { book: string; groupSize: number; onLoadingChange: (isLoading: boolean) => void }) {
         this.book = props.book;
         this.groupSize = props.groupSize;

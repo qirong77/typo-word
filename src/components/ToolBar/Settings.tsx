@@ -1,14 +1,117 @@
-import { SettingOutlined } from "@ant-design/icons";
-import { Button, Popover } from "antd";
-import { useState } from "react";
+import { BookOutlined, DeleteOutlined, HistoryOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Menu, Popover, Table, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { VocabularyList } from "./VocabularyList";
+import { historyDataManager, IHistory } from "../../data";
 
-export function Settings() {
+export function Settings({ book }: { book: string }) {
     const [visible, setVisible] = useState(false);
-
-    const content = <div>开发中...</div>;
+    const [selectedKeys, setSelectedKeys] = useState(["1"]);
+    const content = (
+        <div className="flex">
+            <Menu
+                selectedKeys={selectedKeys}
+                onClick={({ key }) => {
+                    setSelectedKeys([key]);
+                }}
+                items={[
+                    { key: "1", label: "单词书", icon: <BookOutlined /> },
+                    { key: "2", label: "快捷键", icon: <RocketOutlined /> },
+                    { key: "3", label: "历史记录", icon: <HistoryOutlined /> },
+                ]}
+            />
+            <MenuItem label={selectedKeys[0]} book={book} />
+        </div>
+    );
     return (
         <Popover content={content} title={"设置"} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
             <Button icon={<SettingOutlined />}>设置</Button>
         </Popover>
     );
+}
+
+function MenuItem(props: { label: string; book: string }) {
+    if (props.label === "单词书") {
+        return (
+            <div>
+                <VocabularyList book={props.book} />
+            </div>
+        );
+    }
+    if (props.label === "快捷键") {
+        return <div>开发中...</div>;
+    }
+    if (props.label === "历史记录") {
+        return (
+            <div>
+                <HistoryList />
+            </div>
+        );
+    }
+}
+
+function HistoryList() {
+    const [historyList, setHistoryList] = useState<IHistory[]>([]);
+    const [currentPage, setCurrentPage] = useState(1); // 当前页码
+    const [pageSize, setPageSize] = useState(5); // 每页显示的条数
+
+    useEffect(() => {
+        const data = historyDataManager.getData();
+        setHistoryList(data);
+    }, []);
+
+    // 删除单词
+    const handleDelete = (id: number) => {
+        historyDataManager.arrayDelectByMatch("id", id);
+    };
+
+    const columns = [
+        {
+            title: "单词",
+            dataIndex: "word",
+            key: "word",
+        },
+        {
+            title: "中文意思",
+            dataIndex: "means",
+            key: "means",
+            render: (means: string[]) => means.join("、"),
+        },
+        {
+            title: "操作",
+            key: "action",
+            render: (_: any, record: IHistory) => (
+                <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} danger>
+                    删除
+                </Button>
+            ),
+        },
+    ];
+
+    const content = (
+        <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
+            {historyList.length > 0 ? (
+                <Table
+                    bordered
+                    dataSource={historyList}
+                    columns={columns}
+                    rowKey="word"
+                    pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: historyList.length,
+                        onChange: (page, size) => {
+                            setCurrentPage(page);
+                            setPageSize(size);
+                        },
+                    }}
+                    size="small"
+                />
+            ) : (
+                <Typography.Text type="secondary">暂无数据</Typography.Text>
+            )}
+        </div>
+    );
+
+    return content;
 }

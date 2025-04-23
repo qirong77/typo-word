@@ -6,7 +6,6 @@ import CET6 from "./4-CET6-顺序.json";
 import Graduate from "./5-考研-顺序.json";
 import TOEFL from "./6-托福-顺序.json";
 import SAT from "./7-SAT-顺序.json";
-// const BOOKS = ["Graduate", "HighSchool", "MiddleSchool", "CET4", "CET6", "SAT", "TOEFL", "生词本"];
 export const E_BOOKS = {
     MiddleSchool: "MiddleSchool",
     HighSchool: "HighSchool",
