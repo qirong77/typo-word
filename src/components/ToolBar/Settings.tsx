@@ -64,36 +64,62 @@ function HistoryList() {
         historyDataManager.objectDeleteDataByKey(id.toString());
     };
 
-    const columns = [
-        {
-            title: "单词",
-            dataIndex: "word",
-            key: "word",
-        },
-        {
-            title: "中文意思",
-            dataIndex: "means",
-            key: "means",
-            render: (means: string[]) => means.join("、"),
-        },
-        {
-            title: "操作",
-            key: "action",
-            render: (_: any, record: IHistory) => (
-                <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} danger>
-                    删除
-                </Button>
-            ),
-        },
-    ];
-
     const content = (
         <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
             {historyList.length > 0 ? (
                 <Table
                     bordered
                     dataSource={historyList}
-                    columns={columns}
+                    columns={[
+                        {
+                            title: "Time",
+                            dataIndex: "id",
+                            key: "id",
+                            render(value, record, index) {
+                                return <span>{new Date(value).toLocaleString()}</span>;
+                            },
+                        },
+                        {
+                            title: "时间",
+                            dataIndex: "timeElapsed",
+                            key: "timeElapsed",
+                            render(value, record, index) {
+                                return <span>{value}</span>;
+                            },
+                        },
+                        {
+                            title: "单词数",
+                            dataIndex: "wordCount",
+                            key: "wordCount",
+                        },
+                        {
+                            title: "输入数",
+                            dataIndex: "count",
+                            key: "count",
+                        },
+                        {
+                            title: "正确数",
+                            dataIndex: "count",
+                            key: "count",
+                        },
+                        {
+                            title: "正确率",
+                            dataIndex: "accuracy",
+                            key: "accuracy",
+                            render(value, record, index) {
+                                return <span>{value}</span>;
+                            },
+                        },
+                        {
+                            title: "操作",
+                            key: "action",
+                            render: (_: any, record: IHistory) => (
+                                <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} danger>
+                                    删除
+                                </Button>
+                            ),
+                        },
+                    ]}
                     rowKey="word"
                     pagination={{
                         current: currentPage,
