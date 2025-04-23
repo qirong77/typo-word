@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
 import { TypeWordEvent } from "../event/TypeWordEvent";
+import { message } from "antd";
 
 export function useInputState(
     word: IWordInfo | undefined,
     successAudioRef: React.RefObject<HTMLAudioElement>,
-    errorAudioRef: React.RefObject<HTMLAudioElement>
+    errorAudioRef: React.RefObject<HTMLAudioElement>,
 ) {
     const [showRealWord, setShowRealWord] = useState(false);
     const [userInputWord, setUserInputWord] = useState("");
@@ -15,6 +16,7 @@ export function useInputState(
         errorCout: 0,
         timeElapsed: "00:00",
         accuracy: 0,
+        wordCount: 0,
     });
     useEffect(() => {
         const keydownHandler = (e: KeyboardEvent) => {
@@ -22,7 +24,14 @@ export function useInputState(
                 e.preventDefault();
                 return;
             }
-            if (e.isComposing) return;
+            if (e.isComposing) {
+                message.error("请使用英文输入法");
+            }
+            if (e.key === "`") {
+                TypeWordEvent.dispatchEvent('key-backquote');
+                e.preventDefault();
+                return;
+            }
             if (e.key === "Backspace") {
                 e.preventDefault();
                 setUserInputWord((v) => v.slice(0, v.length - 1));
@@ -32,13 +41,13 @@ export function useInputState(
                 setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
                 setShowRealWord((v) => !v);
-                TypeWordEvent.dispatchEvent('key-tab')
+                TypeWordEvent.dispatchEvent("key-tab");
                 return;
             }
             if (e.shiftKey) {
                 setUserInputWord("");
                 successAudioRef.current?.play();
-                TypeWordEvent.dispatchEvent('key-shift')
+                TypeWordEvent.dispatchEvent("key-shift");
                 return;
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
@@ -78,7 +87,8 @@ export function useInputState(
                 setUserInputWord("");
                 setShowRealWord(false);
                 successAudioRef.current?.play();
-                TypeWordEvent.dispatchEvent('next-word')
+                TypeWordEvent.dispatchEvent("next-word");
+                setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
             }, 250);
             return;
         }

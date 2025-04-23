@@ -1,4 +1,4 @@
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Word } from "./components/Word";
 import { useLearningState } from "./hooks/useLearningStateGroup/useLearningStateGroup";
 import { Spin } from "antd";

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { SoundOutlined } from "@ant-design/icons";
 import { IWordInfo } from "../hooks/useLearningStateGroup/useLearningStateGroup";
+import { TypeWordEvent } from "../event/TypeWordEvent";
 
 export function Word(props: { word: IWordInfo; userInputWord: string; showRealWord: boolean }) {
     const audioRefAm = useRef<HTMLAudioElement>(null);
@@ -8,6 +9,15 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
     useEffect(() => {
         audioRefAm.current?.play();
     }, [props.word]);
+    useEffect(() => {
+        const handlePlaySound = () => {
+            audioRefAm.current?.play();
+        };
+        TypeWordEvent.addEventListener("key-backquote", handlePlaySound);
+        return () => {
+            TypeWordEvent.removeEventListener("key-backquote", handlePlaySound);
+        };
+    }, []);
     return (
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <div className="relative w-80 h-20">
@@ -27,7 +37,10 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                                 className="w-10 text-center border-b-2 border-solid h-14 border-slate-200"
                                 key={index}
                                 style={{
-                                    color: char.toLocaleLowerCase() === props.userInputWord[index]?.toLocaleLowerCase() ? "var(--color-green-400)" : "var(--color-red-500)",
+                                    color:
+                                        char.toLocaleLowerCase() === props.userInputWord[index]?.toLocaleLowerCase()
+                                            ? "var(--color-green-400)"
+                                            : "var(--color-red-500)",
                                 }}
                             >
                                 {props.userInputWord[index]}
