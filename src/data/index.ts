@@ -20,4 +20,4 @@ export type IHistory = {
     id: number;
     book: string;
 } & IInputState;
-export const historyDataManager = new DataManagerArray<IHistory>("records", []);
+export const historyDataManager = new DataManagerObject<{ [key: number]: IHistory }>("records", []);

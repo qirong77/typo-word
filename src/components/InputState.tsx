@@ -1,3 +1,5 @@
+import { IInputState } from "../hooks/useInputState";
+
 type StatItemProps = {
     label: string;
     value: string | number;
@@ -17,7 +19,7 @@ function StatItem({ label, value }: StatItemProps) {
     );
 }
 
-export function InputStateBoard(props: { count: number; errorCout: number; timeElapsed: string; accuracy: number; wordCount: number }) {
+export function InputStateBoard(props: IInputState) {
     return (
         <div className=" flex justify-around  bg-slate-800 rounded-lg" style={{ marginBottom: "100px" }}>
             <StatItem label="时间" value={props.timeElapsed} />

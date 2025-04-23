@@ -57,12 +57,11 @@ function HistoryList() {
 
     useEffect(() => {
         const data = historyDataManager.getData();
-        setHistoryList(data);
+        setHistoryList(Object.values(data));
     }, []);
 
-    // 删除单词
     const handleDelete = (id: number) => {
-        historyDataManager.arrayDelectByMatch("id", id);
+        historyDataManager.objectDeleteDataByKey(id.toString());
     };
 
     const columns = [
