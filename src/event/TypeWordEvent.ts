@@ -1,4 +1,4 @@
-type EventType = "key-shift" | "next-word" | 'key-tab' | 'key-backquote';
+type EventType = "key-shift" | "next-word" | 'key-tab' | 'key-backquote' | 'book-change';
 export const TypeWordEvent = {
     dispatchEvent(eventName: EventType, detail: any = undefined) {
         const event = new CustomEvent(eventName, { detail });

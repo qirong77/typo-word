@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Word } from "./components/Word";
 import { useLearningState } from "./hooks/useLearningStateGroup/useLearningStateGroup";
 import { Spin } from "antd";
@@ -10,6 +10,7 @@ import { userDataManager } from "./data";
 import { ConfigProvider, theme } from "antd";
 import { useInputState } from "./hooks/useInputState";
 import { useRecordHistory } from "./hooks/useRecordHistory";
+import { TypeWordEvent } from "./event/TypeWordEvent";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
     const { word, isLoading } = useLearningState(5, book);
@@ -17,6 +18,15 @@ export default () => {
     const errorAudioRef = useRef<HTMLAudioElement>(null);
     const { inputState, showRealWord, userInputWord } = useInputState(word!, successAudioRef, errorAudioRef);
     useRecordHistory(inputState, book);
+    useEffect(() => {
+        const fn = (newBook: string) => {
+            setBook(newBook);
+        };
+        TypeWordEvent.addEventListener("book-change", fn);
+        return () => {
+            TypeWordEvent.removeEventListener("book-change", fn);
+        };
+    }, []);
     return (
         <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
             <div className="w-screen h-screen flex flex-col justify-center items-center bg-slate-900">
@@ -34,13 +44,7 @@ export default () => {
                 <InputStateBoard {...inputState} />
                 <audio ref={successAudioRef} src={successAudioUrl} />
                 <audio ref={errorAudioRef} src={errorAudioUrl} />
-                <ToolBar
-                    book={book}
-                    onChangeBook={(value) => {
-                        setBook(value);
-                        userDataManager.objectSetProperty("currentBook", value);
-                    }}
-                />
+                <ToolBar book={book} />
             </div>
         </ConfigProvider>
     );

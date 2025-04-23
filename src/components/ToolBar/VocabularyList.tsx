@@ -1,8 +1,9 @@
-import {  DeleteOutlined } from "@ant-design/icons";
-import { Button , Table, Typography } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Select, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../data";
-import { getBookWords } from "../../books/getBookWords";
+import { E_BOOKS, getBookWords } from "../../books/getBookWords";
+import { TypeWordEvent } from "../../event/TypeWordEvent";
 
 export const VocabularyList = (props: { book: string }) => {
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
@@ -51,6 +52,20 @@ export const VocabularyList = (props: { book: string }) => {
 
     const content = (
         <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
+            <div>
+                <Select
+                    options={Object.values(E_BOOKS).map((book) => {
+                        return {
+                            value: book,
+                            label: book,
+                        };
+                    })}
+                    value={props.book}
+                    onChange={(value) => {
+                        TypeWordEvent.dispatchEvent("book-change", value);
+                    }}
+                />
+            </div>
             {vocabularyList.length > 0 ? (
                 <Table
                     bordered
@@ -74,5 +89,5 @@ export const VocabularyList = (props: { book: string }) => {
         </div>
     );
 
-    return content
+    return content;
 };
