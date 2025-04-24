@@ -11,9 +11,7 @@ export function useRecordHistory(inputState: IInputState, book: string) {
                 book,
                 ...inputState,
             });
-            console.log('inputState', inputState);
-            console.log('newState',historyDataManager.getData())
-        }, 1000 * 1);
+        }, 1000 * 30);
         return () => clearTimeout(timer);
     }, [inputState, book]);
 }

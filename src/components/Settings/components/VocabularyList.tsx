@@ -1,10 +1,10 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Select, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../data";
-import { getBookWords } from "../../books/getBookWords";
-import { TypeWordEvent } from "../../event/TypeWordEvent";
-import { E_BOOKS } from "../../books/E_BOOKS";
+import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../../data";
+import { getBookWords } from "../../../books/getBookWords";
+import { TypeWordEvent } from "../../../event/TypeWordEvent";
+import { E_BOOKS } from "../../../books/E_BOOKS";
 
 export const VocabularyList = (props: { book: string }) => {
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
