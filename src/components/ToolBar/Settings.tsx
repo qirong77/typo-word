@@ -6,21 +6,28 @@ import { historyDataManager, IHistory } from "../../data";
 
 export function Settings({ book }: { book: string }) {
     const [visible, setVisible] = useState(false);
-    const [selectedKeys, setSelectedKeys] = useState(["1"]);
+    const [selectedKeys, setSelectedKeys] = useState(["单词书"]);
     const content = (
-        <div className="flex">
+        <div className="flex gap-5" style={{
+            width: "680px",
+            height: "380px"
+        }}>
             <Menu
                 selectedKeys={selectedKeys}
-                onClick={({ key }) => {
+                onClick={({key}) => {
                     setSelectedKeys([key]);
                 }}
                 items={[
-                    { key: "1", label: "单词书", icon: <BookOutlined /> },
-                    { key: "2", label: "快捷键", icon: <RocketOutlined /> },
-                    { key: "3", label: "历史记录", icon: <HistoryOutlined /> },
+                    { key: "单词书", label: "单词书", icon: <BookOutlined /> },
+                    { key: "快捷键", label: "快捷键", icon: <RocketOutlined /> },
+                    { key: "历史记录", label: "历史记录", icon: <HistoryOutlined /> },
                 ]}
             />
+            <div style={{
+                // margin:10
+            }}>
             <MenuItem label={selectedKeys[0]} book={book} />
+            </div>
         </div>
     );
     return (

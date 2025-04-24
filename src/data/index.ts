@@ -1,4 +1,5 @@
-import { E_BOOKS } from "../books/getBookWords";
+
+import { E_BOOKS } from "../books/E_BOOKS";
 import { IInputState } from "../hooks/useInputState";
 import { DataManagerArray, DataManagerObject } from "./DataManager";
 export interface IUnfamiliarWords {

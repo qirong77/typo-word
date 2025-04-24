@@ -11,7 +11,7 @@ export function useRecordHistory(inputState: IInputState, book: string) {
                 book,
                 ...inputState,
             });
-        }, 1000 * 60);
+        }, 1000 * 10);
         return () => clearTimeout(timer);
     }, [inputState, book]);
 }
