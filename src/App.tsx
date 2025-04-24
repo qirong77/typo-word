@@ -40,9 +40,9 @@ export default () => {
                             </div>
                         </div>
                     )}
-                    {/* {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />} */}
+                    {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
                 </div>
-                {/* <InputStateBoard {...inputState} /> */}
+                <InputStateBoard {...inputState} />
                 <audio ref={successAudioRef} src={successAudioUrl} />
                 <audio ref={errorAudioRef} src={errorAudioUrl} />
                 <ToolBar book={book} />
