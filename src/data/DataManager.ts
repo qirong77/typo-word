@@ -3,12 +3,10 @@ import { uniqueArray } from "../utils";
 
 export class DataManager<T> {
     private _storageKey = "TypeWord_";
-    public needJsonParse = true;
-    constructor(key: string, private _defaultData: T) {
+    public needJsonParse = false;
+    constructor(key: string, private _defaultData: T, needJsonParse = false) {
+        this.needJsonParse = needJsonParse;
         this._storageKey += key;
-        if (typeof _defaultData === "string") {
-            this.needJsonParse = false;
-        }
         if (!this.getData()) {
             this.saveData(this._defaultData);
         }
@@ -25,7 +23,10 @@ export class DataManager<T> {
 
 export class DataManagerArray<T> extends DataManager<T[]> {
     constructor(key: string, defaultData: T[]) {
-        super(key, defaultData);
+        if (!Array.isArray(defaultData)) {
+            throw new Error("defaultData must be array");
+        }
+        super(key, defaultData, true);
     }
     arrayDelectByMatch(key: string, value: any) {
         // @ts-ignore
@@ -54,28 +55,22 @@ export class DataManagerArray<T> extends DataManager<T[]> {
 
 export class DataManagerObject<T> extends DataManager<T> {
     constructor(key: string, defaultData: T) {
-        super(key, defaultData);
+        if (typeof defaultData !== "object") {
+            throw new Error("defaultData must be object");
+        }
+        super(key, defaultData, true);
     }
     objectDeleteDataByKey(key: string) {
-        if (!this.needJsonParse) {
-            console.error("不支持");
-            message.error("不支持");
-            return;
-        }
         const oldData = this.getData() as T;
         // @ts-ignore
         delete oldData[key];
         this.saveData(oldData);
     }
     objectSetProperty(key: keyof T, value: any) {
-        if (!this.needJsonParse) {
-            console.error("不支持");
-            message.error("不支持");
-            return;
-        }
         const oldData = this.getData() as T;
         // @ts-ignore
         oldData[key] = value;
+        console.log(oldData);
         this.saveData(oldData);
     }
 }

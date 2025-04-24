@@ -20,6 +20,7 @@ export default () => {
     useRecordHistory(inputState, book);
     useEffect(() => {
         const fn = (newBook: string) => {
+            console.log('newBook', newBook)
             setBook(newBook);
         };
         TypeWordEvent.addEventListener("book-change", fn);
@@ -39,9 +40,9 @@ export default () => {
                             </div>
                         </div>
                     )}
-                    {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
+                    {/* {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />} */}
                 </div>
-                <InputStateBoard {...inputState} />
+                {/* <InputStateBoard {...inputState} /> */}
                 <audio ref={successAudioRef} src={successAudioUrl} />
                 <audio ref={errorAudioRef} src={errorAudioUrl} />
                 <ToolBar book={book} />

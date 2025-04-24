@@ -61,9 +61,9 @@ function HistoryList() {
     const [historyList, setHistoryList] = useState<IHistory[]>([]);
     const [currentPage, setCurrentPage] = useState(1); // 当前页码
     const [pageSize, setPageSize] = useState(5); // 每页显示的条数
-
     useEffect(() => {
         const data = historyDataManager.getData();
+        console.log(data)
         setHistoryList(Object.values(data));
     }, []);
 

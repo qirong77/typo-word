@@ -20,7 +20,7 @@ export const VocabularyList = (props: { book: string }) => {
                 means: [],
             }))
         );
-    }, []);
+    }, [props.book]);
 
     // 删除单词
     const handleDelete = (word: string) => {
@@ -44,7 +44,13 @@ export const VocabularyList = (props: { book: string }) => {
             title: "操作",
             key: "action",
             render: (_: any, record: IUnfamiliarWords) => (
-                <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDelete(record.word)} danger>
+                <Button
+                    type="text"
+                    disabled={props.book !== E_BOOKS.生词本}
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleDelete(record.word)}
+                    danger
+                >
                     删除
                 </Button>
             ),
@@ -53,7 +59,7 @@ export const VocabularyList = (props: { book: string }) => {
 
     const content = (
         <div style={{ width: 500 }}>
-            <div style={{marginBottom:10}}>
+            <div style={{ marginBottom: 10 }}>
                 <Select
                     options={Object.values(E_BOOKS).map((book) => {
                         return {
