@@ -9,7 +9,7 @@ export class DataManager<T> {
         this._storageKey += key;
         if (!this.getData()) {
             this.saveData(this._defaultData);
-        }
+        } 
     }
     getData(): T {
         if (!this.needJsonParse) return window.localStorage.getItem(this._storageKey)! as T;

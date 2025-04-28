@@ -15,6 +15,8 @@ export function HistoryList() {
 
     const handleDelete = (id: number) => {
         historyDataManager.objectDeleteDataByKey(id.toString());
+        const data = historyDataManager.getData();
+        setHistoryList(Object.values(data));
     };
 
     const content = (

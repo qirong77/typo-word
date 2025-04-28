@@ -20,8 +20,10 @@ export default () => {
     useRecordHistory(inputState, book);
     useEffect(() => {
         const fn = (newBook: string) => {
-            console.log('newBook', newBook)
             setBook(newBook);
+            userDataManager.saveData({
+                currentBook: newBook,
+            });
         };
         TypeWordEvent.addEventListener("book-change", fn);
         return () => {
