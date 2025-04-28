@@ -21,6 +21,7 @@ export function HistoryList() {
         <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
             {historyList.length > 0 ? (
                 <Table
+                    scroll={{ x: 'max-content' }}
                     bordered
                     dataSource={historyList}
                     columns={[
@@ -31,6 +32,11 @@ export function HistoryList() {
                             render(value) {
                                 return <span>{new Date(value).toLocaleString()}</span>;
                             },
+                        },
+                        {
+                            title:'单词书',
+                            dataIndex:'book',
+                            key:'book',
                         },
                         {
                             title: "时间",
@@ -60,7 +66,7 @@ export function HistoryList() {
                             dataIndex: "accuracy",
                             key: "accuracy",
                             render(value) {
-                                return <span>{value}</span>;
+                                return <span>{value}%</span>;
                             },
                         },
                         {

@@ -67,15 +67,17 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                     />
                 </span>
             </div>
-            <div>
-                {props.word.means.map((mean, index) => {
-                    return (
-                        <span className="text-center mx-2 text-slate-400" key={index}>
-                            {mean}、
-                        </span>
-                    );
-                })}
-            </div>
+            {props.showRealWord && (
+                <div>
+                    {props.word.means.map((mean, index) => {
+                        return (
+                            <span className="text-center mx-2 text-slate-400" key={index}>
+                                {mean}、
+                            </span>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }

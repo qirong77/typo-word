@@ -1,4 +1,5 @@
-import { Settings } from "./Settings";
+import { Settings } from "../Settings";
+
 
 export const ToolBar = (props: { book: string }) => {
     return (

@@ -32,7 +32,7 @@ export function Settings({ book }: { book: string }) {
         </div>
     );
     return (
-        <Popover content={content} title={"设置"} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
+        <Popover destroyTooltipOnHide content={content} title={"设置"} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
             <Button icon={<SettingOutlined />}>设置</Button>
         </Popover>
     );
