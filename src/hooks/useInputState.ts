@@ -12,6 +12,7 @@ export interface IInputState {
 }
 export function useInputState(
     word: IWordInfo | undefined,
+    book: string,
     successAudioRef: React.RefObject<HTMLAudioElement>,
     errorAudioRef: React.RefObject<HTMLAudioElement>
 ) {
@@ -86,6 +87,16 @@ export function useInputState(
             window.clearInterval(timer);
         };
     }, []);
+    useEffect(() => {
+        setInputState({
+            count: 0,
+            errorCout: 0,
+            timeElapsed: "00:00",
+            accuracy: 0,
+            wordCount: 0,
+        });
+        setUserInputWord("");
+    }, [book]);
     useEffect(() => {
         if (!word) return;
         if (isSameWord(word.word, userInputWord)) {

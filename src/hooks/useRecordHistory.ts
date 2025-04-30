@@ -5,6 +5,9 @@ import { historyDataManager } from "../data";
 export function useRecordHistory(inputState: IInputState, book: string) {
     const id = useRef(new Date().getTime());
     useEffect(() => {
+        id.current = new Date().getTime();
+    }, [book]);
+    useEffect(() => {
         const timer = setTimeout(() => {
             historyDataManager.objectSetProperty(id.current, {
                 id: id.current,
