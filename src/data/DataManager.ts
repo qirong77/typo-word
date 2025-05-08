@@ -1,4 +1,3 @@
-import { message } from "antd";
 import { uniqueArray } from "../utils";
 
 export class DataManager<T> {
@@ -37,7 +36,6 @@ export class DataManagerArray<T> extends DataManager<T[]> {
             this.saveData(oldData);
             return;
         }
-        message.error("arrayDelectByMatch error");
     }
     arrayAddItem(item: T, uniquneKey?: keyof T) {
         let oldData = this.getData() as T[];
@@ -49,7 +47,6 @@ export class DataManagerArray<T> extends DataManager<T[]> {
             this.saveData(oldData);
             return;
         }
-        message.error("arrayAdd error");
     }
 }
 
@@ -70,7 +67,6 @@ export class DataManagerObject<T> extends DataManager<T> {
         const oldData = this.getData() as T;
         // @ts-ignore
         oldData[key] = value;
-        console.log(oldData);
         this.saveData(oldData);
     }
 }

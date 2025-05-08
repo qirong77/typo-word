@@ -46,7 +46,7 @@ export const VocabularyList = (props: { book: string }) => {
             render: (_: any, record: IUnfamiliarWords) => (
                 <Button
                     type="text"
-                    disabled={props.book !== E_BOOKS.生词本}
+                    disabled={![E_BOOKS.生词本,E_BOOKS.熟悉本].includes(props.book)}
                     icon={<DeleteOutlined />}
                     onClick={() => handleDelete(record.word)}
                     danger

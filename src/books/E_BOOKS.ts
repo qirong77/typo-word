@@ -7,4 +7,5 @@ export const E_BOOKS = {
     SAT: "SAT",
     TOEFL: "TOEFL",
     生词本: "生词本",
+    熟悉本: "熟悉本",
 };

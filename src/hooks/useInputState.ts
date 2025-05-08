@@ -117,5 +117,8 @@ export function useInputState(
             setUserInputWord(userInputWord.slice(0, word.word.length));
         }
     }, [userInputWord, word]);
+    useEffect(() => {
+        setShowRealWord(false);
+    }, [word]);
     return { inputState, setInputState, showRealWord, userInputWord };
 }
