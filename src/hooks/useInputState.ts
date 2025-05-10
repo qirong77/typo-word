@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
 import { TypeWordEvent } from "../event/TypeWordEvent";
@@ -25,6 +25,7 @@ export function useInputState(
         accuracy: 0,
         wordCount: 0,
     });
+    const isCurrentWordUnFamiliar = useRef(false);
     useEffect(() => {
         const keydownHandler = (e: KeyboardEvent) => {
             if (isCombinationKeyInput(e)) {
@@ -49,6 +50,7 @@ export function useInputState(
                 e.preventDefault();
                 setShowRealWord((v) => !v);
                 TypeWordEvent.dispatchEvent("key-tab");
+                isCurrentWordUnFamiliar.current = true;
                 return;
             }
             if (e.shiftKey) {
@@ -100,13 +102,17 @@ export function useInputState(
     useEffect(() => {
         if (!word) return;
         if (isSameWord(word.word, userInputWord)) {
-            setTimeout(() => {
-                setUserInputWord("");
-                setShowRealWord(false);
-                successAudioRef.current?.play();
-                TypeWordEvent.dispatchEvent("next-word");
-                setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
-            }, 250);
+            setTimeout(
+                () => {
+                    setUserInputWord("");
+                    setShowRealWord(false);
+                    successAudioRef.current?.play();
+                    TypeWordEvent.dispatchEvent("next-word");
+                    isCurrentWordUnFamiliar.current = false;
+                    setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
+                },
+                isCurrentWordUnFamiliar.current ? 1500 : 250
+            );
             return;
         }
         if (!isInlucdesWord(word.word, userInputWord)) {

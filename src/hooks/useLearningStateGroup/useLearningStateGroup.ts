@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { TypeWordEvent } from "../../event/TypeWordEvent";
 
 import { familarWordsDataManager, unFamiliarWordsDataManager } from "../../data";
-import { WordGroupManager } from "./WordGroupManager";
+import { WordGroupManager } from "./wordGroupManager";
 export interface IWordInfo {
     word: string;
     ph_en: string;

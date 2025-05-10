@@ -14,22 +14,37 @@ export function getBookWords(book: string): string[] {
     if (book === E_BOOKS.熟悉本) {
         return familarWordsDataManager.getData().map((v) => v.word);
     }
+    let result = [];
     switch (book) {
         case E_BOOKS.Graduate:
-            return Graduate;
+            result = Graduate;
+            break;
         case E_BOOKS.HighSchool:
-            return HighSchool;
+            result = HighSchool;
+            break;
         case E_BOOKS.MiddleSchool:
-            return MiddleSchool;
+            result = MiddleSchool;
+            break;
         case E_BOOKS.CET4:
-            return CET4;
+            result = CET4;
+            break;
         case E_BOOKS.CET6:
-            return CET6;
+            result = CET6;
+            break;
         case E_BOOKS.SAT:
-            return SAT;
+            result = SAT;
+            break;
         case E_BOOKS.TOEFL:
-            return TOEFL;
+            result = TOEFL;
+            break;
         default:
             return [];
     }
+    return filterBookWords(result);
+}
+
+function filterBookWords(bookWords: string[]) {
+    const set = new Set<string>(...familarWordsDataManager.getData().map((v) => v.word));
+    const result = bookWords.filter((v) => !set.has(v));
+    return result;
 }
