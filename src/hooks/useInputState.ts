@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
 import { TypeWordEvent } from "../event/TypeWordEvent";
@@ -26,6 +26,14 @@ export function useInputState(
         wordCount: 0,
     });
     const isCurrentWordUnFamiliar = useRef(false);
+    const nextWordFn = useCallback(() => {
+        setShowRealWord(false);
+        TypeWordEvent.dispatchEvent("next-word");
+        successAudioRef.current?.play();
+        isCurrentWordUnFamiliar.current = false;
+        setUserInputWord("");
+        setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
+    }, []);
     useEffect(() => {
         const keydownHandler = (e: KeyboardEvent) => {
             if (isCombinationKeyInput(e)) {
@@ -52,6 +60,9 @@ export function useInputState(
                 TypeWordEvent.dispatchEvent("key-tab");
                 isCurrentWordUnFamiliar.current = true;
                 return;
+            }
+            if (e.code === "Space") {
+                nextWordFn();
             }
             if (e.shiftKey) {
                 setUserInputWord("");
@@ -102,17 +113,9 @@ export function useInputState(
     useEffect(() => {
         if (!word) return;
         if (isSameWord(word.word, userInputWord)) {
-            setTimeout(
-                () => {
-                    setUserInputWord("");
-                    setShowRealWord(false);
-                    successAudioRef.current?.play();
-                    TypeWordEvent.dispatchEvent("next-word");
-                    isCurrentWordUnFamiliar.current = false;
-                    setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
-                },
-                isCurrentWordUnFamiliar.current ? 1500 : 250
-            );
+            setShowRealWord(true);
+            setUserInputWord("");
+            successAudioRef.current?.play();
             return;
         }
         if (!isInlucdesWord(word.word, userInputWord)) {
@@ -126,5 +129,5 @@ export function useInputState(
     useEffect(() => {
         setShowRealWord(false);
     }, [word]);
-    return { inputState, setInputState, showRealWord, userInputWord };
+    return { inputState, setInputState, showRealWord, userInputWord, nextWordFn };
 }
