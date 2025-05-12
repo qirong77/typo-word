@@ -15,7 +15,6 @@ export function useLearningState(book: string) {
             });
         };
         const handleLoadingChange = (loading: boolean) => {
-            console.log(loading)
             setIsLoading(loading);
         };
         wordGroupManagerRef.current.registerLoadingChangeHandler(handleLoadingChange);
