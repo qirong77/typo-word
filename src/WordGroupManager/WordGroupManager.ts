@@ -38,6 +38,9 @@ export class WordGroupManager extends LoadingManager {
         if (!this.currentWord) {
             await this.addNewWords();
         }
+        if (this._group.length - this._index < this._groupSize) {
+            this.addNewWords();
+        }
         return this.currentWord;
     }
     setBook(book: string) {

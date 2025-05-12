@@ -33,6 +33,7 @@ export function useInputState(
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
+        TypeWordEvent.dispatchEvent("next-word");
         setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
     }, []);
     useEffect(() => {
@@ -59,19 +60,21 @@ export function useInputState(
                 setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
                 setShowRealWord((v) => !v);
-                word && unFamiliarWordsDataManager.arrayAddItem(word, "word");
-                isCurrentWordUnFamiliar.current = true;
                 return;
             }
             if (e.code === "Space") {
                 nextWordFn();
             }
-            if (e.shiftKey) {
-                setUserInputWord("");
-                successAudioRef.current?.play();
+            if (e.code === "Minus") {
+                message.info("已添加到熟词本");
+                nextWordFn();
                 word && familarWordsDataManager.arrayAddItem(word, "word");
                 word && unFamiliarWordsDataManager.arrayDelectByMatch("word", word.word);
                 return;
+            }
+            if (e.code === "Equal") {
+                message.info("已添加到生词本");
+                word && unFamiliarWordsDataManager.arrayAddItem(word, "word");
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
                 e.preventDefault();

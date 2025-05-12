@@ -15,10 +15,11 @@ export function useLearningState(book: string) {
             });
         };
         const handleLoadingChange = (loading: boolean) => {
+            console.log(loading)
             setIsLoading(loading);
         };
         wordGroupManagerRef.current.registerLoadingChangeHandler(handleLoadingChange);
-
+        handleNewWord()
         TypeWordEvent.addEventListener("next-word", handleNewWord);
         return () => {
             TypeWordEvent.removeEventListener("next-word", handleNewWord);
