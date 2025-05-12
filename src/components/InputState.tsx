@@ -26,7 +26,7 @@ export function InputStateBoard(props: IInputState) {
             <StatItem label="单词数" value={props.wordCount} />
             <StatItem label="输入数" value={props.count} />
             <StatItem label="正确数" value={props.count - props.errorCout} />
-            <StatItem label="正确率" value={`${props.accuracy}%`} />
+            {/* <StatItem label="正确率" value={`${props.accuracy}%`} /> */}
         </div>
     );
 }

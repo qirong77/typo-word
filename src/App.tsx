@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Word } from "./components/Word";
-import { useLearningState } from "./hooks/useLearningStateGroup/useLearningStateGroup";
 import { Spin } from "antd";
 import { InputStateBoard } from "./components/InputState";
 import successAudioUrl from "../public/assets/correct.mp3";
@@ -11,9 +10,10 @@ import { ConfigProvider, theme } from "antd";
 import { useInputState } from "./hooks/useInputState";
 import { useRecordHistory } from "./hooks/useRecordHistory";
 import { TypeWordEvent } from "./event/TypeWordEvent";
+import { useLearningState } from "./hooks/useLearningState";
 export default () => {
     const [book, setBook] = useState(userDataManager.getData().currentBook);
-    const { word, isLoading } = useLearningState(5, book);
+    const { word, isLoading } = useLearningState(book);
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
     const { inputState, showRealWord, userInputWord } = useInputState(word!,book, successAudioRef, errorAudioRef);

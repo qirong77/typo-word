@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
-import { IWordInfo } from "./useLearningStateGroup/useLearningStateGroup";
+
 import { TypeWordEvent } from "../event/TypeWordEvent";
 import { message } from "antd";
+import { familarWordsDataManager, unFamiliarWordsDataManager } from "../data";
+import { IWordInfo } from "../type";
 export interface IInputState {
     count: number;
     errorCout: number;
@@ -28,13 +30,13 @@ export function useInputState(
     const isCurrentWordUnFamiliar = useRef(false);
     const nextWordFn = useCallback(() => {
         setShowRealWord(false);
-        TypeWordEvent.dispatchEvent("next-word");
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
         setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
     }, []);
     useEffect(() => {
+        setShowRealWord(false);
         const keydownHandler = (e: KeyboardEvent) => {
             if (isCombinationKeyInput(e)) {
                 e.preventDefault();
@@ -57,7 +59,7 @@ export function useInputState(
                 setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
                 setShowRealWord((v) => !v);
-                TypeWordEvent.dispatchEvent("key-tab");
+                word && unFamiliarWordsDataManager.arrayAddItem(word, "word");
                 isCurrentWordUnFamiliar.current = true;
                 return;
             }
@@ -67,7 +69,8 @@ export function useInputState(
             if (e.shiftKey) {
                 setUserInputWord("");
                 successAudioRef.current?.play();
-                TypeWordEvent.dispatchEvent("key-shift");
+                word && familarWordsDataManager.arrayAddItem(word, "word");
+                word && unFamiliarWordsDataManager.arrayDelectByMatch("word", word.word);
                 return;
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
@@ -82,7 +85,7 @@ export function useInputState(
         return () => {
             document.removeEventListener("keydown", keydownHandler);
         };
-    }, []);
+    }, [word]);
     useEffect(() => {
         let startTime: number = 0;
         startTime = Date.now();
@@ -126,8 +129,5 @@ export function useInputState(
             setUserInputWord(userInputWord.slice(0, word.word.length));
         }
     }, [userInputWord, word]);
-    useEffect(() => {
-        setShowRealWord(false);
-    }, [word]);
     return { inputState, setInputState, showRealWord, userInputWord, nextWordFn };
 }

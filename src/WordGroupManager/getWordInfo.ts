@@ -1,5 +1,6 @@
 import { message } from "antd";
-import { IWordInfo } from "./useLearningStateGroup";
+import { IWordInfo } from "../type";
+
 
 // https://www.iciba.com/word?w=book
 export function getWordInfo(word: string) {
