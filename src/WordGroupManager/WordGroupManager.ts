@@ -9,13 +9,13 @@ export class WordGroupManager extends LoadingManager {
     private _group: IWordInfo[] = [];
     private _index = 0;
     private _groupSize = 5;
-    public book: string;
+    private _book: string;
     constructor(book: string) {
         super();
-        this.book = book;
+        this._book = book;
     }
     async addNewWords() {
-        const bookWords = getBookWords(this.book);
+        const bookWords = getBookWords(this._book);
         if (!bookWords.length) {
             message.error("当前词库为空");
             return;
@@ -39,6 +39,14 @@ export class WordGroupManager extends LoadingManager {
             await this.addNewWords();
         }
         return this.currentWord;
+    }
+    setBook(book: string) {
+        if (this._book !== book) {
+            this._book = book;
+            this._group = [];
+            this._index = 0;
+            this.addNewWords();
+        }
     }
     get currentWord() {
         return this._group[this._index];

@@ -26,7 +26,7 @@ export function useLearningState(book: string) {
         };
     }, []);
     useEffect(() => {
-        wordGroupManagerRef.current.book = book;
+        wordGroupManagerRef.current.setBook(book);
     }, [book]);
     return { word, isLoading };
 }
