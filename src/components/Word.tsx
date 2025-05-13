@@ -50,21 +50,15 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
                 </div>
             </div>
             <div className="my-5 flex gap-10">
-                <span className="flex gap-2">
+                <span className="flex gap-2 cursor-pointer" onClick={() => audioRefAm.current?.play()}>
                     <span className="text-center mx-2 text-slate-400">美 [ {props.word.ph_am} ]</span>
                     <audio ref={audioRefAm} className=" hidden" src={props.word.ph_am_mp3}></audio>
-                    <SoundOutlined
-                        onClick={() => audioRefAm.current?.play()}
-                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer", outline: "none" }}
-                    />
+                    <SoundOutlined style={{ fontSize: "18px", color: "var(--color-slate-300)", outline: "none" }} />
                 </span>
-                <span className="flex gap-2">
+                <span className="flex gap-2 cursor-pointer" onClick={() => audioRefEn.current?.play()}>
                     <span className="text-center mx-2 text-slate-400">英 [ {props.word.ph_en} ]</span>
                     <audio ref={audioRefEn} className="hidden" src={props.word.ph_en_mp3}></audio>
-                    <SoundOutlined
-                        onClick={() => audioRefEn.current?.play()}
-                        style={{ fontSize: "18px", color: "var(--color-slate-300)", cursor: "pointer", outline: "none" }}
-                    />
+                    <SoundOutlined style={{ fontSize: "18px", color: "var(--color-slate-300)", outline: "none" }} />
                 </span>
             </div>
             <div

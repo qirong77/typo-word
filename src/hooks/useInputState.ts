@@ -39,12 +39,18 @@ export function useInputState(
     useEffect(() => {
         setShowRealWord(false);
         const keydownHandler = (e: KeyboardEvent) => {
+            if(e.code === 'Backspace' && e.metaKey) {
+                setUserInputWord('')
+                e.preventDefault();
+                return;
+            }
             if (isCombinationKeyInput(e)) {
                 e.preventDefault();
                 return;
             }
             if (e.isComposing) {
                 message.error("请使用英文输入法");
+                return
             }
             if (e.key === "`") {
                 TypeWordEvent.dispatchEvent("key-backquote");
@@ -64,6 +70,7 @@ export function useInputState(
             }
             if (e.code === "Space") {
                 nextWordFn();
+                return
             }
             if (e.code === "Minus") {
                 message.info("已添加到熟词本");
@@ -75,6 +82,7 @@ export function useInputState(
             if (e.code === "Equal") {
                 message.info("已添加到生词本");
                 word && unFamiliarWordsDataManager.arrayAddItem(word, "word");
+                return
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
                 e.preventDefault();
