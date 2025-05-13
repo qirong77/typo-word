@@ -1,8 +1,9 @@
-import { BookOutlined , HistoryOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
-import { Button, Menu, Popover,  } from "antd";
-import {  useState } from "react";
+import { BookOutlined, HistoryOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Menu, Popover } from "antd";
+import { useState } from "react";
 import { VocabularyList } from "./components/VocabularyList";
 import { HistoryList } from "./components/HistoryList";
+import { HotKeyList } from "./components/HotKeyList";
 
 export function Settings({ book }: { book: string }) {
     const [visible, setVisible] = useState(false);
@@ -32,7 +33,16 @@ export function Settings({ book }: { book: string }) {
         </div>
     );
     return (
-        <Popover destroyTooltipOnHide content={content} title={"设置"} trigger="click" open={visible} onOpenChange={setVisible} placement="bottomRight" arrow={true}>
+        <Popover
+            destroyTooltipOnHide
+            content={content}
+            title={"设置"}
+            trigger="click"
+            open={visible}
+            onOpenChange={setVisible}
+            placement="bottomRight"
+            arrow={true}
+        >
             <Button icon={<SettingOutlined />}>设置</Button>
         </Popover>
     );
@@ -47,7 +57,11 @@ function MenuItem(props: { label: string; book: string }) {
         );
     }
     if (props.label === "快捷键") {
-        return <div>开发中...</div>;
+        return (
+            <div>
+                <HotKeyList />
+            </div>
+        );
     }
     if (props.label === "历史记录") {
         return (

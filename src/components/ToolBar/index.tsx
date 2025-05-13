@@ -2,6 +2,7 @@ import { Select } from "antd";
 import { Settings } from "../Settings";
 import { E_BOOKS } from "../../books/E_BOOKS";
 import { TypeWordEvent } from "../../event/TypeWordEvent";
+import { GithubIcon } from "./GithubIcon";
 
 export const ToolBar = (props: { book: string }) => {
     return (
@@ -19,6 +20,7 @@ export const ToolBar = (props: { book: string }) => {
                 }}
             />
             <Settings book={props.book} />
+            <GithubIcon />
         </div>
     );
 };

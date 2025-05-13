@@ -21,7 +21,9 @@ export function HistoryList() {
 
     const content = (
         <div style={{ width: 500, maxHeight: 360, overflow: "auto" }}>
-            {historyList.length > 0 ? (
+                <Typography.Text type="secondary">开发中...</Typography.Text>
+
+            {/* {historyList.length > 0 ? (
                 <Table
                     scroll={{ x: 'max-content' }}
                     bordered
@@ -96,7 +98,7 @@ export function HistoryList() {
                 />
             ) : (
                 <Typography.Text type="secondary">暂无数据</Typography.Text>
-            )}
+            )} */}
         </div>
     );
 
