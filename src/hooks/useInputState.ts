@@ -5,6 +5,7 @@ import { TypeWordEvent } from "../event/TypeWordEvent";
 import { message } from "antd";
 import { familarWordsDataManager, unFamiliarWordsDataManager } from "../data";
 import { IWordInfo } from "../type";
+import { wordGroupManager } from "../WordGroupManager";
 export interface IInputState {
     count: number;
     errorCout: number;
@@ -29,18 +30,25 @@ export function useInputState(
     });
     const isCurrentWordUnFamiliar = useRef(false);
     const nextWordFn = useCallback(() => {
+        wordGroupManager.nextWord();
         setShowRealWord(false);
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
-        TypeWordEvent.dispatchEvent("next-word");
         setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
+    }, []);
+    const preWordFn = useCallback(() => {
+        wordGroupManager.prevWord();
+        setShowRealWord(false);
+        successAudioRef.current?.play();
+        isCurrentWordUnFamiliar.current = false;
+        setUserInputWord("");
     }, []);
     useEffect(() => {
         setShowRealWord(false);
         const keydownHandler = (e: KeyboardEvent) => {
-            if(e.code === 'Backspace' && e.metaKey) {
-                setUserInputWord('')
+            if (e.code === "Backspace" && e.metaKey) {
+                setUserInputWord("");
                 e.preventDefault();
                 return;
             }
@@ -50,7 +58,7 @@ export function useInputState(
             }
             if (e.isComposing) {
                 message.error("请使用英文输入法");
-                return
+                return;
             }
             if (e.key === "`") {
                 TypeWordEvent.dispatchEvent("key-backquote");
@@ -70,7 +78,15 @@ export function useInputState(
             }
             if (e.code === "Space") {
                 nextWordFn();
-                return
+                return;
+            }
+            if (e.code === "ArrowLeft") {
+                preWordFn();
+                return;
+            }
+            if (e.code === "ArrowRight") {
+                nextWordFn();
+                return;
             }
             if (e.code === "Minus") {
                 message.info("已添加到熟词本");
@@ -82,7 +98,7 @@ export function useInputState(
             if (e.code === "Equal") {
                 message.info("已添加到生词本");
                 word && unFamiliarWordsDataManager.arrayAddItem(word, "word");
-                return
+                return;
             }
             if (!/^[a-zA-Z]$/.test(e.key)) {
                 e.preventDefault();

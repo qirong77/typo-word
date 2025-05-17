@@ -10,10 +10,12 @@ export class WordGroupManager extends LoadingManager {
     private _index = 0;
     private _groupSize = 5;
     private _book: string;
+    private _onCurrentWordChange: Function[] = [];
     constructor(book: string) {
         super();
         this._book = book;
     }
+
     async addNewWords() {
         const bookWords = getBookWords(this._book);
         if (!bookWords.length) {
@@ -41,7 +43,26 @@ export class WordGroupManager extends LoadingManager {
         if (this._group.length - this._index < this._groupSize) {
             this.addNewWords();
         }
+        this._onCurrentWordChange.forEach((handler) => {
+            handler(this.currentWord);
+        });
         return this.currentWord;
+    }
+    async prevWord() {
+        this._index--;
+        if (this._index < 0) {
+            this._index = 0;
+        }
+        this._onCurrentWordChange.forEach((handler) => {
+            handler(this.currentWord);
+        });
+        return this.currentWord;
+    }
+    registerCurrentWordChangeHandler(handler: Function) {
+        this._onCurrentWordChange.push(handler);
+    }
+    unregisterCurrentWordChangeHandler(handler: Function) {
+        this._onCurrentWordChange = this._onCurrentWordChange.filter((h) => h !== handler);
     }
     setBook(book: string) {
         if (this._book !== book) {
