@@ -14,6 +14,9 @@ export function isCombinationKeyInput(e: KeyboardEvent) {
     if (/^[a-zA-Z]$/.test(e.key)) {
         key += 1;
     }
+    if(e.code === 'Minus' || e.code === 'Equal') {
+        key += 1;
+    }
     if (e.code === "Tab") key += 1;
     if (e.altKey) key += 1;
     if (e.metaKey) key += 1;

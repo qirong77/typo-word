@@ -43,6 +43,7 @@ export function useInputState(
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
+        setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
     }, []);
     useEffect(() => {
         setShowRealWord(false);
