@@ -48,6 +48,9 @@ export function useInputState(
     useEffect(() => {
         setShowRealWord(false);
         const keydownHandler = (e: KeyboardEvent) => {
+            if ((e.code === "Minus" || e.code === "Equal") && e.metaKey) {
+                return;
+            }
             if (e.code === "Backspace" && e.metaKey) {
                 setUserInputWord("");
                 e.preventDefault();
