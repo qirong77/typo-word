@@ -16,7 +16,7 @@ export default () => {
     const { word, isLoading } = useLearningState(book);
     const successAudioRef = useRef<HTMLAudioElement>(null);
     const errorAudioRef = useRef<HTMLAudioElement>(null);
-    const { inputState, showRealWord, userInputWord } = useInputState(word!,book, successAudioRef, errorAudioRef);
+    const { inputState, showRealWord, userInputWord,showChinese } = useInputState(word!,book, successAudioRef, errorAudioRef);
     useRecordHistory(inputState, book);
     useEffect(() => {
         const fn = (newBook: string) => {
@@ -42,7 +42,7 @@ export default () => {
                             </div>
                         </div>
                     )}
-                    {!isLoading && word && <Word showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
+                    {!isLoading && word && <Word showChinese={showChinese} showRealWord={showRealWord} word={word} userInputWord={userInputWord} />}
                 </div>
                 <InputStateBoard {...inputState} />
                 <audio ref={successAudioRef} src={successAudioUrl} />

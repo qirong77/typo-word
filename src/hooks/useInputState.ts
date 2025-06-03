@@ -33,6 +33,7 @@ export function useInputState(
     const nextWordFn = useCallback(() => {
         wordGroupManager.nextWord();
         setShowRealWord(false);
+        setShowChinese(false);
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
@@ -41,6 +42,7 @@ export function useInputState(
     const preWordFn = useCallback(() => {
         wordGroupManager.prevWord();
         setShowRealWord(false);
+        setShowChinese(false);
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
         setUserInputWord("");
@@ -54,6 +56,7 @@ export function useInputState(
         }
         if (!showRealWord && !showChinese) {
             setShowRealWord(true);
+            console.log(1)
             return;
         }
         if (showRealWord && !showChinese) {
@@ -62,8 +65,6 @@ export function useInputState(
         }
     }, [showChinese, showRealWord]);
     useEffect(() => {
-        setShowRealWord(false);
-        setShowChinese(false);
         const keydownHandler = (e: KeyboardEvent) => {
             if ((e.code === "Minus" || e.code === "Equal") && e.metaKey) {
                 return;

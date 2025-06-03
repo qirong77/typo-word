@@ -19,6 +19,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
             TypeWordEvent.removeEventListener("key-backquote", handlePlaySound);
         };
     }, []);
+    console.log(props.showRealWord,props.showChinese)
     return (
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <div className="relative w-80 h-20">
@@ -64,7 +65,7 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
             </div>
             <div
                 style={{
-                    opacity: props.showRealWord ? "1" : "0",
+                    opacity: props.showChinese ? "1" : "0",
                     marginTop: "10px",
                 }}
             >
