@@ -4,7 +4,7 @@ import { SoundOutlined } from "@ant-design/icons";
 import { TypeWordEvent } from "../event/TypeWordEvent";
 import { IWordInfo } from "../type";
 
-export function Word(props: { word: IWordInfo; userInputWord: string; showRealWord: boolean }) {
+export function Word(props: { word: IWordInfo; userInputWord: string; showRealWord: boolean,showChinese: boolean }) {
     const audioRefAm = useRef<HTMLAudioElement>(null);
     const audioRefEn = useRef<HTMLAudioElement>(null);
     useEffect(() => {

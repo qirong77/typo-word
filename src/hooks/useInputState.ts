@@ -20,6 +20,7 @@ export function useInputState(
     errorAudioRef: React.RefObject<HTMLAudioElement>
 ) {
     const [showRealWord, setShowRealWord] = useState(false);
+    const [showChinese, setShowChinese] = useState(false);
     const [userInputWord, setUserInputWord] = useState("");
     const [inputState, setInputState] = useState({
         count: 0,
@@ -45,8 +46,24 @@ export function useInputState(
         setUserInputWord("");
         setInputState((v) => ({ ...v, wordCount: v.wordCount + 1 }));
     }, []);
+    const handleTab = useCallback(() => {
+        if (showRealWord && showChinese) {
+            setShowChinese(false);
+            setShowRealWord(false);
+            return;
+        }
+        if (!showRealWord && !showChinese) {
+            setShowRealWord(true);
+            return;
+        }
+        if (showRealWord && !showChinese) {
+            setShowChinese(true);
+            return;
+        }
+    }, [showChinese, showRealWord]);
     useEffect(() => {
         setShowRealWord(false);
+        setShowChinese(false);
         const keydownHandler = (e: KeyboardEvent) => {
             if ((e.code === "Minus" || e.code === "Equal") && e.metaKey) {
                 return;
@@ -75,21 +92,16 @@ export function useInputState(
                 return;
             }
             if (e.key === "Tab") {
-                setInputState((v) => ({ ...v, errorCout: v.errorCout + 1 }));
                 e.preventDefault();
-                setShowRealWord((v) => !v);
+                handleTab();
                 return;
             }
-            if (e.code === "Space") {
+            if (e.code === "Space" || e.code === "ArrowRight") {
                 nextWordFn();
                 return;
             }
             if (e.code === "ArrowLeft") {
                 preWordFn();
-                return;
-            }
-            if (e.code === "ArrowRight") {
-                nextWordFn();
                 return;
             }
             if (e.code === "Minus") {
@@ -108,7 +120,6 @@ export function useInputState(
                 e.preventDefault();
                 return;
             }
-
             setInputState((v) => ({ ...v, count: v.count + 1, accuracy: Math.floor(((v.count - v.errorCout) / v.count) * 100) }));
             setUserInputWord((v) => v + e.key);
         };
@@ -116,7 +127,7 @@ export function useInputState(
         return () => {
             document.removeEventListener("keydown", keydownHandler);
         };
-    }, [word]);
+    }, [word, handleTab]);
     useEffect(() => {
         let startTime: number = 0;
         startTime = Date.now();
@@ -135,13 +146,6 @@ export function useInputState(
         };
     }, []);
     useEffect(() => {
-        setInputState({
-            count: 0,
-            errorCout: 0,
-            timeElapsed: "00:00",
-            accuracy: 0,
-            wordCount: 0,
-        });
         setUserInputWord("");
     }, [book]);
     useEffect(() => {
@@ -160,5 +164,5 @@ export function useInputState(
             setUserInputWord(userInputWord.slice(0, word.word.length));
         }
     }, [userInputWord, word]);
-    return { inputState, setInputState, showRealWord, userInputWord, nextWordFn };
+    return { inputState, setInputState, showRealWord, userInputWord, nextWordFn, showChinese };
 }
