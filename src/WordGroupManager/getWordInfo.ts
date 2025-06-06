@@ -1,9 +1,14 @@
 import { message } from "antd";
 import { IWordInfo } from "../type";
-
+import totalWord from "../data/total-words.json";
 
 // https://www.iciba.com/word?w=book
 export function getWordInfo(word: string) {
+    // @ts-ignore
+    if (totalWord[word]) {
+        // @ts-ignore
+        return Promise.resolve(totalWord[word]);
+    }
     const url = "https://nvmwtbxkogzhldqnlrbl.supabase.co/functions/v1/hello-world";
     const headers = {
         Authorization:
@@ -39,6 +44,6 @@ export function getWordInfo(word: string) {
         })
         .catch((error) => {
             message.error("获取单词信息失败");
-            console.error("Fetch error:", error)
+            console.error("Fetch error:", error);
         });
 }
