@@ -1,9 +1,11 @@
-import { BookOutlined, HistoryOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
+import { BookOutlined, HistoryOutlined, RocketOutlined, SettingOutlined, SoundOutlined } from "@ant-design/icons";
 import { Button, Menu, Popover } from "antd";
 import { useState } from "react";
 import { VocabularyList } from "./components/VocabularyList";
 import { HistoryList } from "./components/HistoryList";
 import { HotKeyList } from "./components/HotKeyList";
+import { VolumeControl } from "./components/VolumeControl";
+
 
 export function Settings({ book }: { book: string }) {
     const [visible, setVisible] = useState(false);
@@ -25,6 +27,7 @@ export function Settings({ book }: { book: string }) {
                     { key: "单词书", label: "单词书", icon: <BookOutlined /> },
                     { key: "快捷键", label: "快捷键", icon: <RocketOutlined /> },
                     { key: "历史记录", label: "历史记录", icon: <HistoryOutlined /> },
+                    { key: "音量设置", label: "音量设置", icon: <SoundOutlined /> },
                 ]}
             />
             <div>
@@ -67,6 +70,13 @@ function MenuItem(props: { label: string; book: string }) {
         return (
             <div>
                 <HistoryList />
+            </div>
+        );
+    }
+    if (props.label === "音量设置") {
+        return (
+            <div>
+                <VolumeControl />
             </div>
         );
     }
