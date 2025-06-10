@@ -19,7 +19,6 @@ export function Word(props: { word: IWordInfo; userInputWord: string; showRealWo
             TypeWordEvent.removeEventListener("key-backquote", handlePlaySound);
         };
     }, []);
-    console.log(props.showRealWord,props.showChinese)
     return (
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <div className="relative w-80 h-20">

@@ -13,8 +13,10 @@ export const familarWordsDataManager = new DataManagerArray<{
 
 export const userDataManager = new DataManagerObject<{
     currentBook: string;
+    defaultShowWord: boolean;
 }>("HotKeys", {
     currentBook: E_BOOKS.Graduate,
+    defaultShowWord: true,
 });
 export type IHistory = {
     id: number;

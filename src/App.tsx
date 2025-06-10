@@ -22,6 +22,7 @@ export default () => {
         const fn = (newBook: string) => {
             setBook(newBook);
             userDataManager.saveData({
+                ...userDataManager.getData(),
                 currentBook: newBook,
             });
         };

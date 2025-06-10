@@ -3,7 +3,7 @@ import { isCombinationKeyInput, isInlucdesWord, isSameWord } from "../utils";
 
 import { TypeWordEvent } from "../event/TypeWordEvent";
 import { message } from "antd";
-import { familarWordsDataManager, unFamiliarWordsDataManager } from "../data";
+import { familarWordsDataManager, unFamiliarWordsDataManager, userDataManager } from "../data";
 import { IWordInfo } from "../type";
 import { wordGroupManager } from "../WordGroupManager";
 export interface IInputState {
@@ -19,7 +19,7 @@ export function useInputState(
     successAudioRef: React.RefObject<HTMLAudioElement>,
     errorAudioRef: React.RefObject<HTMLAudioElement>
 ) {
-    const [showRealWord, setShowRealWord] = useState(false);
+    const [showRealWord, setShowRealWord] = useState(userDataManager.getData().defaultShowWord);
     const [showChinese, setShowChinese] = useState(false);
     const [userInputWord, setUserInputWord] = useState("");
     const [inputState, setInputState] = useState({
@@ -32,7 +32,7 @@ export function useInputState(
     const isCurrentWordUnFamiliar = useRef(false);
     const nextWordFn = useCallback(() => {
         wordGroupManager.nextWord();
-        setShowRealWord(false);
+        setShowRealWord(userDataManager.getData().defaultShowWord);
         setShowChinese(false);
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
@@ -41,7 +41,7 @@ export function useInputState(
     }, []);
     const preWordFn = useCallback(() => {
         wordGroupManager.prevWord();
-        setShowRealWord(false);
+        setShowRealWord(userDataManager.getData().defaultShowWord);
         setShowChinese(false);
         successAudioRef.current?.play();
         isCurrentWordUnFamiliar.current = false;
@@ -51,12 +51,11 @@ export function useInputState(
     const handleTab = useCallback(() => {
         if (showRealWord && showChinese) {
             setShowChinese(false);
-            setShowRealWord(false);
+            setShowRealWord(userDataManager.getData().defaultShowWord);
             return;
         }
         if (!showRealWord && !showChinese) {
             setShowRealWord(true);
-            console.log(1)
             return;
         }
         if (showRealWord && !showChinese) {
