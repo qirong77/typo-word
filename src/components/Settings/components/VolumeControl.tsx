@@ -1,9 +1,10 @@
-import { Slider } from "antd";
+import { Radio, Slider } from "antd";
 import { useEffect, useState } from "react";
+import { userDataManager } from "../../../data";
 
 export function VolumeControl() {
     const [volume, setVolume] = useState(100);
-
+    const [isDefaultShowWord, setIsDefaultShowWord] = useState(userDataManager.getData().defaultShowWord);
     useEffect(() => {
         // 初始化时从localStorage获取音量设置，如果没有则默认为100
         const savedVolume = localStorage.getItem("typo-word-volume");
@@ -26,15 +27,21 @@ export function VolumeControl() {
         <div style={{ width: 500, padding: "20px 0" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
                 <span style={{ marginRight: 12 }}>音量：</span>
-                <Slider
-                    style={{ flex: 1 }}
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    min={0}
-                    max={100}
-                    step={1}
-                />
+                <Slider style={{ flex: 1 }} value={volume} onChange={handleVolumeChange} min={0} max={100} step={1} />
                 <span style={{ marginLeft: 12 }}>{volume}%</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <span style={{ marginRight: 12 }}>默认显示单词：</span>
+                <Radio
+                    value={isDefaultShowWord}
+                    onChange={(e) => {
+                        setIsDefaultShowWord(e.target.checked);
+                        userDataManager.saveData({
+                            ...userDataManager.getData(),
+                            defaultShowWord: e.target.checked,
+                        });
+                    }}
+                />
             </div>
         </div>
     );

@@ -14,7 +14,7 @@ export const familarWordsDataManager = new DataManagerArray<{
 export const userDataManager = new DataManagerObject<{
     currentBook: string;
     defaultShowWord: boolean;
-}>("HotKeys", {
+}>("UserData", {
     currentBook: E_BOOKS.Graduate,
     defaultShowWord: true,
 });
