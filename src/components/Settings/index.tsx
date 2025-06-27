@@ -1,10 +1,11 @@
 import { BookOutlined, HistoryOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Menu, Popover } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { VocabularyList } from "./components/VocabularyList";
 import { HistoryList } from "./components/HistoryList";
 import { HotKeyList } from "./components/HotKeyList";
 import { VolumeControl } from "./components/VolumeControl";
+import { TypeWordEvent } from "../../event/TypeWordEvent";
 
 
 export function Settings({ book }: { book: string }) {
@@ -14,8 +15,8 @@ export function Settings({ book }: { book: string }) {
         <div
             className="flex gap-5"
             style={{
-                width: "680px",
-                height: "380px",
+                width: "800px",
+                height: "480px",
             }}
         >
             <Menu
@@ -35,6 +36,9 @@ export function Settings({ book }: { book: string }) {
             </div>
         </div>
     );
+    useEffect(() => {
+        TypeWordEvent.dispatchEvent("setting-visible-change", visible)
+    },[visible])
     return (
         <Popover
             destroyTooltipOnHide

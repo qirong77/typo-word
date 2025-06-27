@@ -22,6 +22,7 @@ export function useInputState(
     const [showRealWord, setShowRealWord] = useState(userDataManager.getData().defaultShowWord);
     const [showChinese, setShowChinese] = useState(false);
     const [userInputWord, setUserInputWord] = useState("");
+    const showSettingRef = useRef(false);
     const [inputState, setInputState] = useState({
         count: 0,
         errorCout: 0,
@@ -65,6 +66,9 @@ export function useInputState(
     }, [showChinese, showRealWord]);
     useEffect(() => {
         const keydownHandler = (e: KeyboardEvent) => {
+            if (showSettingRef.current) {
+                return;
+            }
             if ((e.code === "Minus" || e.code === "Equal") && e.metaKey) {
                 return;
             }
@@ -129,6 +133,9 @@ export function useInputState(
         };
     }, [word, handleTab]);
     useEffect(() => {
+        const handlerSetting = (visible: boolean) => {
+            showSettingRef.current = visible;
+        };
         let startTime: number = 0;
         startTime = Date.now();
         const timer = setInterval(() => {
@@ -141,8 +148,10 @@ export function useInputState(
                 timeElapsed: formattedTime,
             }));
         }, 1000);
+        TypeWordEvent.addEventListener("setting-visible-change", handlerSetting);
         return () => {
             window.clearInterval(timer);
+            TypeWordEvent.removeEventListener("setting-visible-change", handlerSetting);
         };
     }, []);
     useEffect(() => {

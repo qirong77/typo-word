@@ -1,25 +1,23 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Select, Table, Typography } from "antd";
+import { Button, Checkbox, Radio, Select, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { IUnfamiliarWords, unFamiliarWordsDataManager } from "../../../data";
 import { getBookWords } from "../../../books/getBookWords";
 import { TypeWordEvent } from "../../../event/TypeWordEvent";
 import { E_BOOKS } from "../../../books/E_BOOKS";
+import { getWordInfo } from "../../../WordGroupManager/getWordInfo";
 
 export const VocabularyList = (props: { book: string }) => {
     const [vocabularyList, setVocabularyList] = useState<{ word: string; means: string[] }[]>([]);
     const [currentPage, setCurrentPage] = useState(1); // 当前页码
     const [pageSize, setPageSize] = useState(5); // 每页显示的条数
-
+    const [showChinese, setShowChinese] = useState(false);
     useEffect(() => {
         // 加载生词列表数据
         const data = getBookWords(props.book);
-        setVocabularyList(
-            data.map((item) => ({
-                word: item,
-                means: [],
-            }))
-        );
+        Promise.all(data.map((item) => getWordInfo(item))).then((words) => {
+            setVocabularyList(words);
+        });
     }, [props.book]);
 
     // 删除单词
@@ -27,38 +25,28 @@ export const VocabularyList = (props: { book: string }) => {
         unFamiliarWordsDataManager.arrayDelectByMatch("word", word);
         setVocabularyList(unFamiliarWordsDataManager.getData());
     };
-
-    const columns = [
-        {
-            title: "单词",
-            dataIndex: "word",
-            key: "word",
-        },
-        {
-            title: "中文意思",
-            dataIndex: "means",
-            key: "means",
-            render: (means: string[]) => means.join("、"),
-        },
-        {
-            title: "操作",
-            key: "action",
-            render: (_: any, record: IUnfamiliarWords) => (
-                <Button
-                    type="text"
-                    disabled={![E_BOOKS.生词本,E_BOOKS.熟悉本].includes(props.book)}
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDelete(record.word)}
-                    danger
-                >
-                    删除
-                </Button>
-            ),
-        },
-    ];
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.shiftKey) {
+                e.preventDefault();
+                setShowChinese((v) => !v);
+                return;
+            }
+            if (e.code === "ArrowLeft") {
+                setCurrentPage((v) => v - 1);
+            }
+            if (e.code === "ArrowRight") {
+                setCurrentPage((v) => v + 1);
+            }
+        };
+        document.addEventListener("keydown", handler);
+        return () => {
+            document.removeEventListener("keydown", handler);
+        };
+    }, []);
 
     const content = (
-        <div style={{ width: 500 }}>
+        <div>
             <div style={{ marginBottom: 10 }}>
                 <Select
                     options={Object.values(E_BOOKS).map((book) => {
@@ -77,7 +65,50 @@ export const VocabularyList = (props: { book: string }) => {
                 <Table
                     bordered
                     dataSource={vocabularyList}
-                    columns={columns}
+                    columns={[
+                        {
+                            title: "单词",
+                            dataIndex: "word",
+                            key: "word",
+                            width: 100,
+                        },
+                        {
+                            title: (
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                    <span>释义</span>
+                                    <Checkbox
+                                        checked={showChinese}
+                                        onChange={(e) => {
+                                            setShowChinese(e.target.checked);
+                                        }}
+                                    />
+                                </div>
+                            ),
+                            dataIndex: "means",
+                            key: "means",
+                            width:500,
+                            render: (value: string[]) => {
+                                if (!showChinese) return "-";
+                                return value.join(",");
+                            },
+                        },
+                        {
+                            title: "操作",
+                            key: "action",
+                            width: 100,
+                            render: (_: any, record: IUnfamiliarWords) => (
+                                <Button
+                                    type="text"
+                                    disabled={![E_BOOKS.生词本, E_BOOKS.熟悉本].includes(props.book)}
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => handleDelete(record.word)}
+                                    danger
+                                >
+                                    删除
+                                </Button>
+                            ),
+                        },
+                    ]}
                     rowKey="word"
                     pagination={{
                         current: currentPage,
